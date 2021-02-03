@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Tim van Gompel <timvangompel@gmail.com>
+Date: Wed, 3 Feb 2021 11:20:28 +0100
+Subject: [PATCH] Kill projectiles in water to improve PlayParadise show performance
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityProjectile.java b/src/main/java/net/minecraft/server/EntityProjectile.java
+index 53a8ea7d1eff84abe6c49464d556aa2788a6abcb..92ff4217476ddae0c44cf6b3b060986afad24dff 100644
+--- a/src/main/java/net/minecraft/server/EntityProjectile.java
++++ b/src/main/java/net/minecraft/server/EntityProjectile.java
+@@ -64,11 +64,14 @@ public abstract class EntityProjectile extends IProjectile {
+         float f;
+ 
+         if (this.isInWater()) {
++            // Paper start
+-            for (int i = 0; i < 4; ++i) {
+-                float f1 = 0.25F; 
+-                this.world.addParticle(Particles.BUBBLE, d0 - vec3d.x * 0.25D, d1 - vec3d.y * 0.25D, d2 - vec3d.z * 0.25D, vec3d.x, vec3d.y, vec3d.z);
+-            }
++            this.die();
++            // Paper end
+ 
+             f = 0.8F;
+         } else {
