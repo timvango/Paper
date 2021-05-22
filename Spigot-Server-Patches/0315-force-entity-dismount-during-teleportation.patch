@@ -19,11 +19,32 @@ this is going to be the best soultion all around.
 
 Improvements/suggestions welcome!
 
-diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 9b8d17aa68bad1a4916681b9eed121011bf3380c..031dcd2092800118d4cb12c8bb92b51ccf1bbd27 100644
---- a/src/main/java/net/minecraft/server/Entity.java
-+++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -1954,12 +1954,15 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+diff --git a/src/main/java/net/minecraft/server/level/EntityPlayer.java b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+index 3e7ac6699ad1f147220c286e251ce0ec1ca25035..e755191435e74246b309f8fe5a668dae2e499df1 100644
+--- a/src/main/java/net/minecraft/server/level/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+@@ -1261,11 +1261,13 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+         }
+     }
+ 
+-    @Override
+-    public void stopRiding() {
++    // Paper start
++    @Override public void stopRiding() { stopRiding(false); }
++    @Override public void stopRiding(boolean suppressCancellation) {
++        // paper end
+         Entity entity = this.getVehicle();
+ 
+-        super.stopRiding();
++        super.stopRiding(suppressCancellation); // Paper
+         Entity entity1 = this.getVehicle();
+ 
+         if (entity1 != entity && this.playerConnection != null) {
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index 0b61d03506bd56cf7e373daacbf4fb2e29bb0a58..1e5930f5ae75b82abf6ea2a50558449fb667016f 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -2040,12 +2040,15 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, ne
  
      }
  
@@ -41,7 +62,7 @@ index 9b8d17aa68bad1a4916681b9eed121011bf3380c..031dcd2092800118d4cb12c8bb92b51c
          }
  
      }
-@@ -2014,7 +2017,10 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2100,7 +2103,10 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, ne
          return true; // CraftBukkit
      }
  
@@ -53,7 +74,7 @@ index 9b8d17aa68bad1a4916681b9eed121011bf3380c..031dcd2092800118d4cb12c8bb92b51c
          if (entity.getVehicle() == this) {
              throw new IllegalStateException("Use x.stopRiding(y), not y.removePassenger(x)");
          } else {
-@@ -2024,7 +2030,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2110,7 +2116,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, ne
              if (getBukkitEntity() instanceof Vehicle && entity.getBukkitEntity() instanceof LivingEntity) {
                  VehicleExitEvent event = new VehicleExitEvent(
                          (Vehicle) getBukkitEntity(),
@@ -62,7 +83,7 @@ index 9b8d17aa68bad1a4916681b9eed121011bf3380c..031dcd2092800118d4cb12c8bb92b51c
                  );
                  // Suppress during worldgen
                  if (this.valid) {
-@@ -2038,7 +2044,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+@@ -2124,7 +2130,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, ne
              }
              // CraftBukkit end
              // Spigot start
@@ -71,30 +92,11 @@ index 9b8d17aa68bad1a4916681b9eed121011bf3380c..031dcd2092800118d4cb12c8bb92b51c
              // Suppress during worldgen
              if (this.valid) {
                  Bukkit.getPluginManager().callEvent(event);
-diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
-index 80a254039f3efbab6f0cbcf830ab5168fdceb0cc..cad21f17dba336bb201d46dce3c13964ccacf65e 100644
---- a/src/main/java/net/minecraft/server/EntityHuman.java
-+++ b/src/main/java/net/minecraft/server/EntityHuman.java
-@@ -940,9 +940,11 @@ public abstract class EntityHuman extends EntityLiving {
-         return -0.35D;
-     }
- 
--    @Override
--    public void bf() {
--        super.bf();
-+    // Paper start
-+    @Override public void bf() { stopRiding(false); }
-+    @Override public void stopRiding(boolean suppressCancellation) {
-+        // Paper end
-+        super.stopRiding(suppressCancellation); // Paper - suppress
-         this.j = 0;
-     }
- 
-diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
-index 352049363d4b7a0302610f7d7cd54c9cc6c2a9e0..cade819fe5f7b23b2f4ada721b33ae74516ef8fc 100644
---- a/src/main/java/net/minecraft/server/EntityLiving.java
-+++ b/src/main/java/net/minecraft/server/EntityLiving.java
-@@ -2922,11 +2922,13 @@ public abstract class EntityLiving extends Entity {
+diff --git a/src/main/java/net/minecraft/world/entity/EntityLiving.java b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+index b3c2976a48c2349e5c22d58dd1ac64a02cd969d5..6ada2fe58966553b52a8a890088c78d5ea0dfd73 100644
+--- a/src/main/java/net/minecraft/world/entity/EntityLiving.java
++++ b/src/main/java/net/minecraft/world/entity/EntityLiving.java
+@@ -3015,11 +3015,13 @@ public abstract class EntityLiving extends Entity {
          return ((Byte) this.datawatcher.get(EntityLiving.ag) & 4) != 0;
      }
  
@@ -111,24 +113,22 @@ index 352049363d4b7a0302610f7d7cd54c9cc6c2a9e0..cade819fe5f7b23b2f4ada721b33ae74
          if (entity != null && entity != this.getVehicle() && !this.world.isClientSide) {
              this.a(entity);
          }
-diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 3530d98ce36e418aa62cc9be3751863af8283339..054820fb0d105b5d5aaaeea9a0675e3085eb4646 100644
---- a/src/main/java/net/minecraft/server/EntityPlayer.java
-+++ b/src/main/java/net/minecraft/server/EntityPlayer.java
-@@ -1128,11 +1128,13 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
-         }
+diff --git a/src/main/java/net/minecraft/world/entity/player/EntityHuman.java b/src/main/java/net/minecraft/world/entity/player/EntityHuman.java
+index 87374174dcbf9e7ee448a1cdd9a3528557c3a2ea..564dfa98c166fde509044e6e1938efb321ece53d 100644
+--- a/src/main/java/net/minecraft/world/entity/player/EntityHuman.java
++++ b/src/main/java/net/minecraft/world/entity/player/EntityHuman.java
+@@ -1039,9 +1039,11 @@ public abstract class EntityHuman extends EntityLiving {
+         return -0.35D;
      }
  
 -    @Override
--    public void stopRiding() {
+-    public void bf() {
+-        super.bf();
 +    // Paper start
-+    @Override public void stopRiding() { stopRiding(false); }
++    @Override public void bf() { stopRiding(false); }
 +    @Override public void stopRiding(boolean suppressCancellation) {
-+        // paper end
-         Entity entity = this.getVehicle();
++        // Paper end
++        super.stopRiding(suppressCancellation); // Paper - suppress
+         this.j = 0;
+     }
  
--        super.stopRiding();
-+        super.stopRiding(suppressCancellation); // Paper
-         Entity entity1 = this.getVehicle();
- 
-         if (entity1 != entity && this.playerConnection != null) {

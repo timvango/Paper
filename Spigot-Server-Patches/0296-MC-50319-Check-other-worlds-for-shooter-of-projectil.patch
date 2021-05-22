@@ -10,11 +10,11 @@ because the entity is in another world.
 If the projectile fails to find the shooter in the current world, check
 other worlds.
 
-diff --git a/src/main/java/net/minecraft/server/IProjectile.java b/src/main/java/net/minecraft/server/IProjectile.java
-index 97aed437adb98bc468ec757df8b6d375b5101834..8d26521bc414b3d34f496e966f0c918b023f4833 100644
---- a/src/main/java/net/minecraft/server/IProjectile.java
-+++ b/src/main/java/net/minecraft/server/IProjectile.java
-@@ -29,7 +29,18 @@ public abstract class IProjectile extends Entity {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java
+index b44b18341331e5176e0f1851aa60cc425ccbd439..29834a3613c7701d46e879d170779eb7e6f664e1 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java
+@@ -45,7 +45,18 @@ public abstract class IProjectile extends Entity {
  
      @Nullable
      public Entity getShooter() {

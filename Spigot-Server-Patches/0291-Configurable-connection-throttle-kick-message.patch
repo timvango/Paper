@@ -5,10 +5,10 @@ Subject: [PATCH] Configurable connection throttle kick message
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index f1c1c9c09c6bfe288a239d53953e55bb0c113c79..20524795840a06cfe60de6ffd0a77b6814132af4 100644
+index 62621562137cba4804f0465c58d25ca2786328e5..7178b37f7978c7e9031a22726005c5099fd78fe0 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-@@ -276,6 +276,11 @@ public class PaperConfig {
+@@ -281,6 +281,11 @@ public class PaperConfig {
          authenticationServersDownKickMessage = Strings.emptyToNull(getString("messages.kick.authentication-servers-down", authenticationServersDownKickMessage));
      }
  
@@ -20,11 +20,11 @@ index f1c1c9c09c6bfe288a239d53953e55bb0c113c79..20524795840a06cfe60de6ffd0a77b68
      private static void savePlayerData() {
          Object val = config.get("settings.save-player-data");
          if (val instanceof Boolean) {
-diff --git a/src/main/java/net/minecraft/server/HandshakeListener.java b/src/main/java/net/minecraft/server/HandshakeListener.java
-index 6d9080abb63a6d13d1184ff6949ba86a470ea390..471826ee4b32fe73d3c39755005e3287f9673c3c 100644
---- a/src/main/java/net/minecraft/server/HandshakeListener.java
-+++ b/src/main/java/net/minecraft/server/HandshakeListener.java
-@@ -35,7 +35,7 @@ public class HandshakeListener implements PacketHandshakingInListener {
+diff --git a/src/main/java/net/minecraft/server/network/HandshakeListener.java b/src/main/java/net/minecraft/server/network/HandshakeListener.java
+index 24486bc7290ec6ef1e00a94e289ca35b804ab172..3d5381a6737876d3d7de40cacef900ab7ad27e27 100644
+--- a/src/main/java/net/minecraft/server/network/HandshakeListener.java
++++ b/src/main/java/net/minecraft/server/network/HandshakeListener.java
+@@ -50,7 +50,7 @@ public class HandshakeListener implements PacketHandshakingInListener {
                      synchronized (throttleTracker) {
                          if (throttleTracker.containsKey(address) && !"127.0.0.1".equals(address.getHostAddress()) && currentTime - throttleTracker.get(address) < connectionThrottle) {
                              throttleTracker.put(address, currentTime);

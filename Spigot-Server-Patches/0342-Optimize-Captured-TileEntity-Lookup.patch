@@ -9,11 +9,11 @@ that scenario is only even valid if were in the middle of a block place.
 Optimize to check if the captured list even has values in it, and also to
 just do a get call since the value can never be null.
 
-diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 89bb995909882a4b35e2d07e5a47739c1d4f46f2..f96ddcba26155bf179489b9d856305b90d1ae014 100644
---- a/src/main/java/net/minecraft/server/World.java
-+++ b/src/main/java/net/minecraft/server/World.java
-@@ -909,12 +909,13 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+diff --git a/src/main/java/net/minecraft/world/level/World.java b/src/main/java/net/minecraft/world/level/World.java
+index 3b5ddc083719608e944bdefa38e1fd3909e8e200..b6b9a471426ddf911a1f6bf38543c0304bfc31f6 100644
+--- a/src/main/java/net/minecraft/world/level/World.java
++++ b/src/main/java/net/minecraft/world/level/World.java
+@@ -968,12 +968,13 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
              return null;
          } else {
              // CraftBukkit start

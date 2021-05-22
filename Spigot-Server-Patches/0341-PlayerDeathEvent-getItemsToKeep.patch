@@ -7,11 +7,11 @@ Exposes a mutable array on items a player should keep on death
 
 Example Usage: https://gist.github.com/aikar/5bb202de6057a051a950ce1f29feb0b4
 
-diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 07fbda110ed1a4f0286fe6352dbe90d54ee680ec..d34cbba632c8847fe40cf68acf4ec204cde8c2bc 100644
---- a/src/main/java/net/minecraft/server/EntityPlayer.java
-+++ b/src/main/java/net/minecraft/server/EntityPlayer.java
-@@ -564,6 +564,46 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+diff --git a/src/main/java/net/minecraft/server/level/EntityPlayer.java b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+index 82f49078a91b6ac471d303bc68891d80e201bd1f..a15b119b24090ffc607bfc9003d5b95f3acf3b2f 100644
+--- a/src/main/java/net/minecraft/server/level/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+@@ -695,6 +695,46 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
          });
      }
  
@@ -58,7 +58,7 @@ index 07fbda110ed1a4f0286fe6352dbe90d54ee680ec..d34cbba632c8847fe40cf68acf4ec204
      @Override
      public void die(DamageSource damagesource) {
          boolean flag = this.world.getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES);
-@@ -653,7 +693,12 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+@@ -778,7 +818,12 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
          this.dropExperience();
          // we clean the player's inventory after the EntityDeathEvent is called so plugins can get the exact state of the inventory.
          if (!event.getKeepInventory()) {

@@ -6,13 +6,13 @@ Subject: [PATCH] Expose the Entity Counter to allow plugins to use valid and
 
 
 diff --git a/src/main/java/org/bukkit/UnsafeValues.java b/src/main/java/org/bukkit/UnsafeValues.java
-index ac43afbf6230a481ab8cffbb3bc91b716316c00d..931ffa38faab86445a5d63364a47cb653ca3d4ed 100644
+index 2d9264ffe0fee863f1b814952ef063daa7962d76..84eda68281c6c6968d95b1313a33696c3a9980d4 100644
 --- a/src/main/java/org/bukkit/UnsafeValues.java
 +++ b/src/main/java/org/bukkit/UnsafeValues.java
-@@ -116,5 +116,13 @@ public interface UnsafeValues {
+@@ -130,5 +130,12 @@ public interface UnsafeValues {
       * @return the translation key
       */
-     String getTranslationKey(org.bukkit.entity.EntityType type);
+     String getTranslationKey(ItemStack itemStack);
 +
 +    /**
 +     * Creates and returns the next EntityId available.
@@ -20,6 +20,5 @@ index ac43afbf6230a481ab8cffbb3bc91b716316c00d..931ffa38faab86445a5d63364a47cb65
 +     * Use this when sending custom packets, so that there are no collisions on the client or server.
 +     */
 +    public int nextEntityId();
-+
      // Paper end
  }

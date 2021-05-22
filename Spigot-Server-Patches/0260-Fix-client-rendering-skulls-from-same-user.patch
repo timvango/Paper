@@ -11,24 +11,19 @@ the texture payload, or random.
 This allows the client to render multiple skull textures from the same user,
 for when different skins were used when skull was made.
 
-diff --git a/src/main/java/net/minecraft/server/ItemStack.java b/src/main/java/net/minecraft/server/ItemStack.java
-index 1a28e6f20340920c35bcd87a0dbfdcd745c79706..64e9d50be03cbefa521bf8c2e6dba5ceadda78b6 100644
---- a/src/main/java/net/minecraft/server/ItemStack.java
-+++ b/src/main/java/net/minecraft/server/ItemStack.java
-@@ -60,7 +60,7 @@ public final class ItemStack {
-     private int g;
-     @Deprecated
-     private Item item;
--    private NBTTagCompound tag;
-+    NBTTagCompound tag; // Paper -> package private
-     private boolean j;
-     private Entity k;
-     private ShapeDetectorBlock l;
-diff --git a/src/main/java/net/minecraft/server/PacketDataSerializer.java b/src/main/java/net/minecraft/server/PacketDataSerializer.java
-index 2976e8cc2da6e54e08e50ca1f5de5669823ef3f7..ee24acdd5e843e5421bf83bd6c069a4ecca09115 100644
---- a/src/main/java/net/minecraft/server/PacketDataSerializer.java
-+++ b/src/main/java/net/minecraft/server/PacketDataSerializer.java
-@@ -284,9 +284,18 @@ public class PacketDataSerializer extends ByteBuf {
+diff --git a/src/main/java/net/minecraft/network/PacketDataSerializer.java b/src/main/java/net/minecraft/network/PacketDataSerializer.java
+index df459918c14589155a574730205cb35d463b8079..5a1187b001004afe22d208bc5d7c288e796e16a6 100644
+--- a/src/main/java/net/minecraft/network/PacketDataSerializer.java
++++ b/src/main/java/net/minecraft/network/PacketDataSerializer.java
+@@ -37,6 +37,7 @@ import net.minecraft.network.chat.IChatBaseComponent;
+ import net.minecraft.resources.MinecraftKey;
+ import net.minecraft.world.item.Item;
+ import net.minecraft.world.item.ItemStack;
++import net.minecraft.world.level.block.entity.TileEntitySkull;
+ import net.minecraft.world.phys.MovingObjectPositionBlock;
+ import net.minecraft.world.phys.Vec3D;
+ 
+@@ -311,9 +312,18 @@ public class PacketDataSerializer extends ByteBuf {
              if (item.usesDurability() || item.n()) {
                  // Spigot start - filter
                  itemstack = itemstack.cloneItemStack();
@@ -48,7 +43,7 @@ index 2976e8cc2da6e54e08e50ca1f5de5669823ef3f7..ee24acdd5e843e5421bf83bd6c069a4e
              }
  
              this.a(nbttagcompound);
-@@ -306,7 +315,16 @@ public class PacketDataSerializer extends ByteBuf {
+@@ -333,7 +343,16 @@ public class PacketDataSerializer extends ByteBuf {
              itemstack.setTag(this.l());
              // CraftBukkit start
              if (itemstack.getTag() != null) {
@@ -66,11 +61,19 @@ index 2976e8cc2da6e54e08e50ca1f5de5669823ef3f7..ee24acdd5e843e5421bf83bd6c069a4e
              }
              // CraftBukkit end
              return itemstack;
-diff --git a/src/main/java/net/minecraft/server/PacketPlayOutMapChunk.java b/src/main/java/net/minecraft/server/PacketPlayOutMapChunk.java
-index 36a7e41cc5036345929ebf4d2fa160a8c16c2c0a..0ef4fbb19fc816f578ad741c4406790f4185093d 100644
---- a/src/main/java/net/minecraft/server/PacketPlayOutMapChunk.java
-+++ b/src/main/java/net/minecraft/server/PacketPlayOutMapChunk.java
-@@ -58,6 +58,7 @@ public class PacketPlayOutMapChunk implements Packet<PacketListenerPlayOut> {
+diff --git a/src/main/java/net/minecraft/network/protocol/game/PacketPlayOutMapChunk.java b/src/main/java/net/minecraft/network/protocol/game/PacketPlayOutMapChunk.java
+index b6b55d5baa5e8a6b69a3e4865c06bc8a4d61a4f3..152118729b1a95dcae05d32aa4289034ba394226 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/PacketPlayOutMapChunk.java
++++ b/src/main/java/net/minecraft/network/protocol/game/PacketPlayOutMapChunk.java
+@@ -15,6 +15,7 @@ import net.minecraft.network.PacketDataSerializer;
+ import net.minecraft.network.protocol.Packet;
+ import net.minecraft.world.level.ChunkCoordIntPair;
+ import net.minecraft.world.level.block.entity.TileEntity;
++import net.minecraft.world.level.block.entity.TileEntitySkull;
+ import net.minecraft.world.level.chunk.BiomeStorage;
+ import net.minecraft.world.level.chunk.Chunk;
+ import net.minecraft.world.level.chunk.ChunkSection;
+@@ -69,6 +70,7 @@ public class PacketPlayOutMapChunk implements Packet<PacketListenerPlayOut> {
  
              if (this.f() || (i & 1 << j) != 0) {
                  NBTTagCompound nbttagcompound = tileentity.b();
@@ -78,11 +81,32 @@ index 36a7e41cc5036345929ebf4d2fa160a8c16c2c0a..0ef4fbb19fc816f578ad741c4406790f
  
                  this.g.add(nbttagcompound);
              }
-diff --git a/src/main/java/net/minecraft/server/TileEntitySkull.java b/src/main/java/net/minecraft/server/TileEntitySkull.java
-index 4fae1b3274a96b871b39de083e9b28ab6129533f..579a81e521fdfabfa0318d06c6760a8ab7a88c1e 100644
---- a/src/main/java/net/minecraft/server/TileEntitySkull.java
-+++ b/src/main/java/net/minecraft/server/TileEntitySkull.java
-@@ -145,9 +145,37 @@ public class TileEntitySkull extends TileEntity /*implements ITickable*/ { // Pa
+diff --git a/src/main/java/net/minecraft/world/item/ItemStack.java b/src/main/java/net/minecraft/world/item/ItemStack.java
+index 2ac8b6ac38bdca26cddfb8652f13b0be0c4000fe..24db5dedf8b41b26fa990a7c7317cdb3e89e7fcd 100644
+--- a/src/main/java/net/minecraft/world/item/ItemStack.java
++++ b/src/main/java/net/minecraft/world/item/ItemStack.java
+@@ -114,7 +114,7 @@ public final class ItemStack {
+     private int g;
+     @Deprecated
+     private Item item;
+-    private NBTTagCompound tag;
++    public NBTTagCompound tag; // Paper private -> public
+     private boolean j;
+     private Entity k;
+     private ShapeDetectorBlock l;
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java b/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java
+index 22217f24b4a87f10b6d5a3e37d23a1164af84ace..4f7c014fa609a39cac651ccc6d3397d7edb77d8d 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/TileEntitySkull.java
+@@ -9,6 +9,7 @@ import java.util.UUID;
+ import javax.annotation.Nullable;
+ import net.minecraft.nbt.GameProfileSerializer;
+ import net.minecraft.nbt.NBTTagCompound;
++import net.minecraft.nbt.NBTTagList;
+ import net.minecraft.network.protocol.game.PacketPlayOutTileEntityData;
+ import net.minecraft.server.players.UserCache;
+ import net.minecraft.util.UtilColor;
+@@ -154,9 +155,37 @@ public class TileEntitySkull extends TileEntity /*implements ITickable*/ { // Pa
      @Nullable
      @Override
      public PacketPlayOutTileEntityData getUpdatePacket() {
@@ -91,7 +115,7 @@ index 4fae1b3274a96b871b39de083e9b28ab6129533f..579a81e521fdfabfa0318d06c6760a8a
      }
  
 +    // Paper start
-+    static NBTTagCompound sanitizeTileEntityUUID(NBTTagCompound cmp) {
++    public static NBTTagCompound sanitizeTileEntityUUID(NBTTagCompound cmp) {
 +        NBTTagCompound owner = cmp.getCompound("Owner");
 +        if (!owner.isEmpty()) {
 +            sanitizeUUID(owner);
@@ -99,7 +123,7 @@ index 4fae1b3274a96b871b39de083e9b28ab6129533f..579a81e521fdfabfa0318d06c6760a8a
 +        return cmp;
 +    }
 +
-+    static void sanitizeUUID(NBTTagCompound owner) {
++    public static void sanitizeUUID(NBTTagCompound owner) {
 +        NBTTagCompound properties = owner.getCompound("Properties");
 +        NBTTagList list = null;
 +        if (!properties.isEmpty()) {

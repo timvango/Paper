@@ -6,10 +6,10 @@ Subject: [PATCH] Add a way to get translation keys for blocks, entities and
 
 
 diff --git a/src/main/java/org/bukkit/Material.java b/src/main/java/org/bukkit/Material.java
-index e203c5bfc1d1bf6b500ef8a4446d3aef182b8ecb..4ba991b79f13219182df35b4ce0c5cf57cbd208b 100644
+index 2b53e68e96ea346a6f2b5cadcf9f81b2c231c408..e453e5eb7245aad3ecbb19652ebb34abe030c0a9 100644
 --- a/src/main/java/org/bukkit/Material.java
 +++ b/src/main/java/org/bukkit/Material.java
-@@ -3580,6 +3580,16 @@ public enum Material implements Keyed {
+@@ -3578,6 +3578,16 @@ public enum Material implements Keyed {
          }
          return false;
      }
@@ -27,42 +27,49 @@ index e203c5bfc1d1bf6b500ef8a4446d3aef182b8ecb..4ba991b79f13219182df35b4ce0c5cf5
  
      /**
 diff --git a/src/main/java/org/bukkit/UnsafeValues.java b/src/main/java/org/bukkit/UnsafeValues.java
-index d3ec5084e33dff038d54cdd2aeb703a3eb25f7a7..ac43afbf6230a481ab8cffbb3bc91b716316c00d 100644
+index e348034288c74ab80360086d71f0b7f61551df24..2d9264ffe0fee863f1b814952ef063daa7962d76 100644
 --- a/src/main/java/org/bukkit/UnsafeValues.java
 +++ b/src/main/java/org/bukkit/UnsafeValues.java
-@@ -94,5 +94,27 @@ public interface UnsafeValues {
+@@ -101,5 +101,34 @@ public interface UnsafeValues {
      byte[] serializeItem(ItemStack item);
  
      ItemStack deserializeItem(byte[] data);
 +
 +    /**
 +     * Return the translation key for the Material, so the client can translate it into the active
-+     * locale when using a TranslatableComponent.
++     * locale when using a {@link net.kyori.adventure.text.TranslatableComponent}.
 +     * @return the translation key
 +     */
 +    String getTranslationKey(Material mat);
 +
 +    /**
 +     * Return the translation key for the Block, so the client can translate it into the active
-+     * locale when using a TranslatableComponent.
++     * locale when using a {@link net.kyori.adventure.text.TranslatableComponent}.
 +     * @return the translation key
 +     */
 +    String getTranslationKey(org.bukkit.block.Block block);
 +
 +    /**
 +     * Return the translation key for the EntityType, so the client can translate it into the active
-+     * locale when using a TranslatableComponent.<br>
++     * locale when using a {@link net.kyori.adventure.text.TranslatableComponent}.<br>
 +     * This is <code>null</code>, when the EntityType isn't known to NMS (custom entities)
 +     * @return the translation key
 +     */
 +    String getTranslationKey(org.bukkit.entity.EntityType type);
++
++    /**
++     * Return the translation key for the ItemStack, so the client can translate it into the active
++     * locale when using a {@link net.kyori.adventure.text.TranslatableComponent}.<br>
++     * @return the translation key
++     */
++    String getTranslationKey(ItemStack itemStack);
      // Paper end
  }
 diff --git a/src/main/java/org/bukkit/block/Block.java b/src/main/java/org/bukkit/block/Block.java
-index f8c599718143fe638de422fd4625f353ee6c54ae..7616c5601adee3cbe0e5f722646a2458b535ab77 100644
+index e1cc36fbe808973227c0e8ca7166453235c90279..e6647c45f65bae916759cd899256f8130790d242 100644
 --- a/src/main/java/org/bukkit/block/Block.java
 +++ b/src/main/java/org/bukkit/block/Block.java
-@@ -573,5 +573,13 @@ public interface Block extends Metadatable {
+@@ -584,5 +584,13 @@ public interface Block extends Metadatable {
       */
      @NotNull
      com.destroystokyo.paper.block.BlockSoundGroup getSoundGroup();
@@ -95,4 +102,26 @@ index 774363a8186b3861f10c0452ac63726cae365169..692b75eb78405874077c850bfc72e247
 +    String getTranslationKey() {
 +        return org.bukkit.Bukkit.getUnsafe().getTranslationKey(this);
 +    }
+ }
+diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
+index 15b48ad1ba5bcf7394fb3f52ce2cc6baa6632f66..c236cb81b7ec7993b63da929c0492564e75581ee 100644
+--- a/src/main/java/org/bukkit/inventory/ItemStack.java
++++ b/src/main/java/org/bukkit/inventory/ItemStack.java
+@@ -851,5 +851,17 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
+         ItemMeta itemMeta = getItemMeta();
+         return itemMeta != null && itemMeta.hasItemFlag(flag);
+     }
++
++    /**
++     * Gets the translation key for this itemstack.
++     * This is not the same as getting the translation key
++     * for the material of this itemstack.
++     *
++     * @return the translation key
++     */
++    @NotNull
++    public String getTranslationKey() {
++        return Bukkit.getUnsafe().getTranslationKey(this);
++    }
+     // Paper end
  }

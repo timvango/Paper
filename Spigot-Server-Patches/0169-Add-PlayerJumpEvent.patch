@@ -4,11 +4,11 @@ Date: Thu, 28 Sep 2017 17:21:44 -0400
 Subject: [PATCH] Add PlayerJumpEvent
 
 
-diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index e83f1bfe2b2c33b3bc6788de6998356430857855..5429e91dec8aa29d8c641db09a1b4de0acd0f5bb 100644
---- a/src/main/java/net/minecraft/server/PlayerConnection.java
-+++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -1017,7 +1017,34 @@ public class PlayerConnection implements PacketListenerPlayIn {
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index bf3195eaf1fc7bdddafbb54d0ccf825e95b63210..7af07ca8e1fa20361c95841b48dd70cdf46a18b5 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -1168,7 +1168,34 @@ public class PlayerConnection implements PacketListenerPlayIn {
                              boolean flag = d8 > 0.0D;
  
                              if (this.player.isOnGround() && !packetplayinflying.b() && flag) {

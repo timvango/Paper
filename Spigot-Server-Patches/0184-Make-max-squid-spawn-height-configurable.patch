@@ -20,11 +20,11 @@ index 6c692e58cde22003ecbf6dc5695799147c39905a..3c39f1bb3d88baaaed4dd43c51faeef8
 +        squidMaxSpawnHeight = getDouble("squid-spawn-height.maximum", 0.0D);
 +    }
  }
-diff --git a/src/main/java/net/minecraft/server/EntitySquid.java b/src/main/java/net/minecraft/server/EntitySquid.java
-index 77b48d03caea9eb8f70792c3e1cae457a2885c81..050c4bdac8519250157b77c3221c99bd49e53a22 100644
---- a/src/main/java/net/minecraft/server/EntitySquid.java
-+++ b/src/main/java/net/minecraft/server/EntitySquid.java
-@@ -169,7 +169,8 @@ public class EntitySquid extends EntityWaterAnimal {
+diff --git a/src/main/java/net/minecraft/world/entity/animal/EntitySquid.java b/src/main/java/net/minecraft/world/entity/animal/EntitySquid.java
+index 3cc9af925aaf116140d5f36cfc56aa001ffb4e35..7ce5e2597b34d3a4d2a79d73c15e893c064fc88c 100644
+--- a/src/main/java/net/minecraft/world/entity/animal/EntitySquid.java
++++ b/src/main/java/net/minecraft/world/entity/animal/EntitySquid.java
+@@ -196,7 +196,8 @@ public class EntitySquid extends EntityWaterAnimal {
      }
  
      public static boolean b(EntityTypes<EntitySquid> entitytypes, GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn, BlockPosition blockposition, Random random) {

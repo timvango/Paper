@@ -14,11 +14,11 @@ off the main thread.
 also adding some additional logging in order to help work out what is causing
 random disconnections for clients.
 
-diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 5429e91dec8aa29d8c641db09a1b4de0acd0f5bb..5b74b394bb832699d2d54030ee691fbe9648f170 100644
---- a/src/main/java/net/minecraft/server/PlayerConnection.java
-+++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -2619,14 +2619,18 @@ public class PlayerConnection implements PacketListenerPlayIn {
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index 7af07ca8e1fa20361c95841b48dd70cdf46a18b5..685415240d7be66fe968198b33c1865a906e18c9 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -2778,14 +2778,18 @@ public class PlayerConnection implements PacketListenerPlayIn {
  
      @Override
      public void a(PacketPlayInKeepAlive packetplayinkeepalive) {

@@ -5,7 +5,7 @@ Subject: [PATCH] POM Changes
 
 
 diff --git a/pom.xml b/pom.xml
-index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6be5e1cd93 100644
+index 3fc047371e8f8a626e69697fad549d689c5dce89..a5d87d22cb1588d15e08da3b37e51c5e261c7799 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,15 +1,14 @@
@@ -28,7 +28,7 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
          <api.version>unknown</api.version>
          <bt.name>git</bt.name>
-@@ -20,21 +19,27 @@
+@@ -20,21 +19,39 @@
      </properties>
  
      <parent>
@@ -40,29 +40,65 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
          <relativePath>../pom.xml</relativePath>
      </parent>
  
++    <dependencyManagement>
++        <dependencies>
++            <dependency>
++                <groupId>org.apache.logging.log4j</groupId>
++                <artifactId>log4j-bom</artifactId>
++                <version>2.11.2</version>
++                <type>pom</type>
++                <scope>import</scope>
++            </dependency>
++        </dependencies>
++    </dependencyManagement>
++
      <dependencies>
          <dependency>
 -            <groupId>org.spigotmc</groupId>
 -            <artifactId>spigot-api</artifactId>
 +            <groupId>com.destroystokyo.paper</groupId>
 +            <artifactId>paper-api</artifactId>
++            <version>${project.version}</version>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <groupId>com.destroystokyo.paper</groupId>
++            <artifactId>paper-mojangapi</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
          <dependency>
 -            <groupId>org.spigotmc</groupId>
-+            <groupId>com.destroystokyo.paper</groupId>
-+            <artifactId>paper-mojangapi</artifactId>
-+            <version>${project.version}</version>
-+            <scope>compile</scope>
-+        </dependency>
-+        <dependency>
 +            <groupId>io.papermc</groupId>
              <artifactId>minecraft-server</artifactId>
              <version>${minecraft.version}-SNAPSHOT</version>
              <scope>compile</scope>
-@@ -64,6 +69,17 @@
-             <version>9.0</version>
+@@ -45,18 +62,15 @@
+             <version>2.12.1</version>
+             <scope>compile</scope>
+         </dependency>
++        <dependency>
++            <groupId>org.apache.logging.log4j</groupId>
++            <artifactId>log4j-api</artifactId>
++            <scope>compile</scope>
++        </dependency>
+         <dependency>
+             <groupId>org.apache.logging.log4j</groupId>
+             <artifactId>log4j-iostreams</artifactId>
+-            <version>2.8.1</version>
+             <scope>compile</scope>
+-            <exclusions>
+-                <!-- included in minecraft-server -->
+-                <exclusion>
+-                    <groupId>org.apache.logging.log4j</groupId>
+-                    <artifactId>log4j-api</artifactId>
+-                </exclusion>
+-            </exclusions>
+         </dependency>
+         <dependency>
+             <groupId>org.ow2.asm</groupId>
+@@ -64,12 +78,23 @@
+             <version>9.1</version>
              <scope>compile</scope>
          </dependency>
 +        <dependency>
@@ -79,7 +115,32 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
          <!-- deprecated API depend -->
          <dependency>
              <groupId>com.googlecode.json-simple</groupId>
-@@ -120,34 +136,22 @@
+             <artifactId>json-simple</artifactId>
+             <version>1.1.1</version>
+-            <scope>runtime</scope>
++            <scope>compile</scope>
+         </dependency>
+         <dependency>
+             <groupId>org.xerial</groupId>
+@@ -80,7 +105,7 @@
+         <dependency>
+             <groupId>mysql</groupId>
+             <artifactId>mysql-connector-java</artifactId>
+-            <version>5.1.49</version>
++            <version>8.0.23</version>
+             <scope>runtime</scope>
+         </dependency>
+         <!-- add these back in as they are not exposed by the API -->
+@@ -105,7 +130,7 @@
+         <dependency>
+             <groupId>org.apache.logging.log4j</groupId>
+             <artifactId>log4j-slf4j-impl</artifactId>
+-            <version>2.8.1</version>
++            <!--<version>2.8.1</version>--> <!--handled by bom-->
+             <scope>runtime</scope>
+             <exclusions>
+                 <!-- included in minecraft-server -->
+@@ -132,34 +157,22 @@
  
      <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
      <build>
@@ -125,7 +186,7 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
                          </goals>
                      </execution>
                  </executions>
-@@ -157,6 +161,7 @@
+@@ -169,6 +182,7 @@
                  <artifactId>maven-jar-plugin</artifactId>
                  <version>3.2.0</version>
                  <configuration>
@@ -133,7 +194,7 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
                      <archive>
                          <manifest>
                              <addDefaultEntries>false</addDefaultEntries>
-@@ -164,8 +169,9 @@
+@@ -176,11 +190,13 @@
                          <manifestEntries>
                              <Main-Class>org.bukkit.craftbukkit.Main</Main-Class>
                              <Implementation-Title>CraftBukkit</Implementation-Title>
@@ -145,7 +206,11 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
                              <Specification-Title>Bukkit</Specification-Title>
                              <Specification-Version>${api.version}</Specification-Version>
                              <Specification-Vendor>Bukkit Team</Specification-Vendor>
-@@ -204,14 +210,23 @@
++                            <Multi-Release>true</Multi-Release>
+                         </manifestEntries>
+                         <manifestSections>
+                             <manifestSection>
+@@ -216,14 +232,24 @@
                              <goal>shade</goal>
                          </goals>
                          <configuration>
@@ -162,15 +227,16 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
 +                                        <!-- paper -->
 +                                        <exclude>io/netty/**</exclude>
 +                                        <exclude>META-INF/native/libnetty*</exclude>
-+                                        <exclude>com/brigadier/**</exclude>
++                                        <exclude>com/mojang/brigadier/**</exclude>
 +                                        <exclude>META-INF/MANIFEST.MF</exclude>
-+                                        <exclude>com.mojang.authlib.yggdrasil.YggdrasilGameProfileRepository</exclude>
-+                                        <exclude>com.mojang.datafixers.util.Either</exclude>
-+                                        <exclude>org.apache.logging.log4j/**</exclude>
++                                        <exclude>com/mojang/authlib/yggdrasil/YggdrasilGameProfileRepository.class</exclude>
++                                        <exclude>com/mojang/datafixers/util/Either*</exclude>
++                                        <exclude>org/apache/logging/log4j/**</exclude>
++                                        <exclude>META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat</exclude>
                                      </excludes>
                                  </filter>
-                             </filters>
-@@ -227,10 +242,11 @@
+                                 <filter>
+@@ -245,10 +271,11 @@
                                      <pattern>jline</pattern>
                                      <shadedPattern>org.bukkit.craftbukkit.libs.jline</shadedPattern>
                                  </relocation>
@@ -186,7 +252,7 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
                                  <relocation>
                                      <pattern>org.apache.commons.codec</pattern>
                                      <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.commons.codec</shadedPattern>
-@@ -272,10 +288,6 @@
+@@ -316,10 +343,6 @@
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-compiler-plugin</artifactId>
                  <version>3.8.1</version>
@@ -195,10 +261,10 @@ index a9d4c697fd52614cff7f035b5e9c7c52c925065b..301bee0db7b1118b2a6588c7ecfa9a6b
 -                    <compilerId>eclipse</compilerId>
 -                </configuration>
                  <dependencies>
-                     <!-- we need our custom version as it fixes some bugs on case sensitive file systems -->
                      <dependency>
+                         <groupId>org.codehaus.plexus</groupId>
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 60ede7442b2d9a63fcd765aff29a96c9130aebac..3f52c19b6b797e26b3dcedcec2afd28c478e7091 100644
+index 036c870d991118e5c09eced8485b94579bc6782a..c6417a0594ffe2d3650ec54d44e575e347a1f724 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -186,7 +186,7 @@ public class Main {

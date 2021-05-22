@@ -5,11 +5,11 @@ Subject: [PATCH] MC-114618 - Fix EntityAreaEffectCloud from going negative
  size
 
 
-diff --git a/src/main/java/net/minecraft/server/EntityAreaEffectCloud.java b/src/main/java/net/minecraft/server/EntityAreaEffectCloud.java
-index f04204b8722a061a09e2b3cad6c67ab5fdd8f071..5b0ee830b45a677bf354b02cf4fd311d842e7678 100644
---- a/src/main/java/net/minecraft/server/EntityAreaEffectCloud.java
-+++ b/src/main/java/net/minecraft/server/EntityAreaEffectCloud.java
-@@ -175,6 +175,12 @@ public class EntityAreaEffectCloud extends Entity {
+diff --git a/src/main/java/net/minecraft/world/entity/EntityAreaEffectCloud.java b/src/main/java/net/minecraft/world/entity/EntityAreaEffectCloud.java
+index 47099ecd70e5077cad8372446d54e28398785bec..679dfe75ea68e38679cd7d6348d0e24ca61911e4 100644
+--- a/src/main/java/net/minecraft/world/entity/EntityAreaEffectCloud.java
++++ b/src/main/java/net/minecraft/world/entity/EntityAreaEffectCloud.java
+@@ -196,6 +196,12 @@ public class EntityAreaEffectCloud extends Entity {
          super.tick();
          boolean flag = this.k();
          float f = this.getRadius();

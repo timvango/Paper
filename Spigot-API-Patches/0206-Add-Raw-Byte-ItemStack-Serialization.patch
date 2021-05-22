@@ -6,10 +6,10 @@ Subject: [PATCH] Add Raw Byte ItemStack Serialization
 Serializes using NBT which is safer for server data migrations than bukkits format.
 
 diff --git a/src/main/java/org/bukkit/UnsafeValues.java b/src/main/java/org/bukkit/UnsafeValues.java
-index 541e28a9bece0beb0c2cf02c39030840b758c6e6..d3ec5084e33dff038d54cdd2aeb703a3eb25f7a7 100644
+index d6897f43a0692e031bed8a212d9a637ef548cc60..e348034288c74ab80360086d71f0b7f61551df24 100644
 --- a/src/main/java/org/bukkit/UnsafeValues.java
 +++ b/src/main/java/org/bukkit/UnsafeValues.java
-@@ -90,5 +90,9 @@ public interface UnsafeValues {
+@@ -97,5 +97,9 @@ public interface UnsafeValues {
      static boolean isLegacyPlugin(org.bukkit.plugin.Plugin plugin) {
          return !Bukkit.getUnsafe().isSupportedApiVersion(plugin.getDescription().getAPIVersion());
      }
@@ -20,10 +20,10 @@ index 541e28a9bece0beb0c2cf02c39030840b758c6e6..d3ec5084e33dff038d54cdd2aeb703a3
      // Paper end
  }
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index d7d6a3e83dfd88359708749f5c12be02815c3580..4f2520f7a4ca6d57a85924ada1068a055b9a01fb 100644
+index bf39989dbe08c93120d75bed6281ae75c460afca..15b48ad1ba5bcf7394fb3f52ce2cc6baa6632f66 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -613,6 +613,30 @@ public class ItemStack implements Cloneable, ConfigurationSerializable {
+@@ -628,6 +628,30 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
          return Bukkit.getServer().getItemFactory().ensureServerConversions(this);
      }
  

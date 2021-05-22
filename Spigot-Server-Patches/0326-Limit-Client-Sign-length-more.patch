@@ -21,11 +21,11 @@ it only impacts data sent from the client.
 
 Set -DPaper.maxSignLength=XX to change limit or -1 to disable
 
-diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index d5397f670f3908a39b2a398ab59f7743c48bef47..af80dcddc4f65acc916b5b12bb7f9fb2effd3b90 100644
---- a/src/main/java/net/minecraft/server/PlayerConnection.java
-+++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -108,6 +108,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index e54c06b1214091985d9e360592a7759ff45efc75..2c949e079e5de86c902b162dfdb6adffe0511448 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -256,6 +256,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
      private int E;
      private int receivedMovePackets;
      private int processedMovePackets;
@@ -33,11 +33,11 @@ index d5397f670f3908a39b2a398ab59f7743c48bef47..af80dcddc4f65acc916b5b12bb7f9fb2
      private static final long KEEPALIVE_LIMIT = Long.getLong("paper.playerconnection.keepalive", 30) * 1000; // Paper - provide property to set keepalive limit
  
      public PlayerConnection(MinecraftServer minecraftserver, NetworkManager networkmanager, EntityPlayer entityplayer) {
-@@ -2706,7 +2707,17 @@ public class PlayerConnection implements PacketListenerPlayIn {
-             String[] lines = new String[4];
+@@ -2861,7 +2862,17 @@ public class PlayerConnection implements PacketListenerPlayIn {
+             List<net.kyori.adventure.text.Component> lines = new java.util.ArrayList<>();
  
              for (int i = 0; i < list.size(); ++i) {
--                lines[i] = SharedConstants.filterAllowedChatCharacters(list.get(i)); // Paper - Replaced with anvil color stripping method to stop exploits that allow colored signs to be created.
+-                lines.add(net.kyori.adventure.text.Component.text(SharedConstants.filterAllowedChatCharacters(list.get(i)))); // Paper - Replaced with anvil color stripping method to stop exploits that allow colored signs to be created.
 +                // Paper start - cap line length - modified clients can send longer data than normal
 +                String currentLine = list.get(i);
 +                if (MAX_SIGN_LINE_LENGTH > 0 && currentLine.length() > MAX_SIGN_LINE_LENGTH) {
@@ -48,7 +48,7 @@ index d5397f670f3908a39b2a398ab59f7743c48bef47..af80dcddc4f65acc916b5b12bb7f9fb2
 +                    }
 +                }
 +                // Paper end
-+                lines[i] = SharedConstants.filterAllowedChatCharacters(currentLine); // Paper - Replaced with anvil color stripping method to stop exploits that allow colored signs to be created.
++                lines.add(net.kyori.adventure.text.Component.text(SharedConstants.filterAllowedChatCharacters(currentLine))); // Paper - Replaced with anvil color stripping method to stop exploits that allow colored signs to be created.
              }
-             SignChangeEvent event = new SignChangeEvent((org.bukkit.craftbukkit.block.CraftBlock) player.getWorld().getBlockAt(x, y, z), this.server.getPlayer(this.player), lines);
+             SignChangeEvent event = new SignChangeEvent(org.bukkit.craftbukkit.block.CraftBlock.at(worldserver, blockposition), this.getPlayer(), lines);
              this.server.getPluginManager().callEvent(event);

@@ -6,11 +6,11 @@ Subject: [PATCH] Optimize CraftBlockData Creation
 Avoids a hashmap lookup by cacheing a reference to the CraftBlockData
 and cloning it when one is needed.
 
-diff --git a/src/main/java/net/minecraft/server/BlockBase.java b/src/main/java/net/minecraft/server/BlockBase.java
-index 8bcca73ae48ee822d32a6d23be2e1056a376e5f6..62e7c6cb1b363d1ee626c4405f8c30e74aba03e9 100644
---- a/src/main/java/net/minecraft/server/BlockBase.java
-+++ b/src/main/java/net/minecraft/server/BlockBase.java
-@@ -323,6 +323,14 @@ public abstract class BlockBase {
+diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
+index 10f4015b8c36e4e27cf7d0745ba70b8a9e60aff3..57857cc33603cf278de424b540a3d4a5943584c9 100644
+--- a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
++++ b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
+@@ -375,6 +375,14 @@ public abstract class BlockBase {
              this.o = blockbase_info.t;
              this.p = blockbase_info.u;
          }
@@ -26,7 +26,7 @@ index 8bcca73ae48ee822d32a6d23be2e1056a376e5f6..62e7c6cb1b363d1ee626c4405f8c30e7
          public void a() {
              if (!this.getBlock().o()) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java b/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
-index 0a377b2026d147abe3d0ec44ed605a20d4664fea..41a32f2c77f2e7b79a067a0ce15c894e53ed8709 100644
+index 76fd1fea386d0e65c63c529dba772f01d9888407..ed88da727feddc319a650fb35710d16727f6dbd7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
 +++ b/src/main/java/org/bukkit/craftbukkit/block/data/CraftBlockData.java
 @@ -509,7 +509,17 @@ public class CraftBlockData implements BlockData {

@@ -18,11 +18,11 @@ spectate the target entity.
 
 Co-authored-by: Spottedleaf <Spottedleaf@users.noreply.github.com>
 
-diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
-index 012856b4dd5a004979d8a5f8521774a404d7d090..8307dd36f772fd575a5a0cbdc7e49aecbd6e29c7 100644
---- a/src/main/java/net/minecraft/server/EntityPlayer.java
-+++ b/src/main/java/net/minecraft/server/EntityPlayer.java
-@@ -1681,15 +1681,59 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+diff --git a/src/main/java/net/minecraft/server/level/EntityPlayer.java b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+index ae9e0f55ddc194aaef1e57e81863569d9bc7b8f3..f5be9554e1fd01a35b926196b30fd64f1567a799 100644
+--- a/src/main/java/net/minecraft/server/level/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/level/EntityPlayer.java
+@@ -1820,15 +1820,59 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
          return (Entity) (this.spectatedEntity == null ? this : this.spectatedEntity);
      }
  
@@ -87,11 +87,11 @@ index 012856b4dd5a004979d8a5f8521774a404d7d090..8307dd36f772fd575a5a0cbdc7e49aec
      }
  
      @Override
-diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index c15d0d0f6f0cfede9c22eba058f2323590f48df7..a534b36ebeb73da843973cc26cdffc91a8173a03 100644
---- a/src/main/java/net/minecraft/server/PlayerConnection.java
-+++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -1204,6 +1204,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index 74942bf7641eafab85202fd6a521780ce4cc1f65..5ea1354fb9d1c570603fc6814198639a741a9e34 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -1355,6 +1355,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
      }
  
      // CraftBukkit start - Delegate to teleport(Location)

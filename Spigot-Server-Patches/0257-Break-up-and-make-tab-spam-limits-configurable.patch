@@ -22,10 +22,10 @@ to take the burden of this into their own hand without having to rely on
 plugins doing unsafe things.
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index fddc8e25347b2a14ff7e0636ec341fd9c0fa5581..89f1eb215a585eccd8498cb337e5894369e41867 100644
+index 77a03abd59db4a43f6f2d59d4c7ef176e782f205..bd508025b771424c942fd856c31d520b6f548082 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-@@ -291,4 +291,18 @@ public class PaperConfig {
+@@ -296,4 +296,18 @@ public class PaperConfig {
              Bukkit.getLogger().log(Level.INFO, "Using Aikar's Alternative Luck Formula to apply Luck attribute to all loot pool calculations. See https://luckformula.emc.gs");
          }
      }
@@ -44,11 +44,11 @@ index fddc8e25347b2a14ff7e0636ec341fd9c0fa5581..89f1eb215a585eccd8498cb337e58943
 +        tabSpamLimit = getInt("settings.spam-limiter.tab-spam-limit", tabSpamLimit);
 +    }
  }
-diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 251333ba81aa55d321b94fa1959306abcb6da636..c15d0d0f6f0cfede9c22eba058f2323590f48df7 100644
---- a/src/main/java/net/minecraft/server/PlayerConnection.java
-+++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -81,6 +81,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index 19763a27ad54866b7d1f6e2cfccd6bbe6e54637e..74942bf7641eafab85202fd6a521780ce4cc1f65 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -230,6 +230,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
      // CraftBukkit start - multithreaded fields
      private volatile int chatThrottle;
      private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(PlayerConnection.class, "chatThrottle");
@@ -56,7 +56,7 @@ index 251333ba81aa55d321b94fa1959306abcb6da636..c15d0d0f6f0cfede9c22eba058f23235
      // CraftBukkit end
      private int j;
      private final Int2ShortMap k = new Int2ShortOpenHashMap();
-@@ -216,6 +217,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -365,6 +366,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
          this.minecraftServer.getMethodProfiler().exit();
          // CraftBukkit start
          for (int spam; (spam = this.chatThrottle) > 0 && !chatSpamField.compareAndSet(this, spam, spam - 1); ) ;
@@ -64,7 +64,7 @@ index 251333ba81aa55d321b94fa1959306abcb6da636..c15d0d0f6f0cfede9c22eba058f23235
          /* Use thread-safe field access instead
          if (this.chatThrottle > 0) {
              --this.chatThrottle;
-@@ -565,7 +567,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -716,7 +718,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
      public void a(PacketPlayInTabComplete packetplayintabcomplete) {
          // PlayerConnectionUtils.ensureMainThread(packetplayintabcomplete, this, this.player.getWorldServer()); // Paper - run this async
          // CraftBukkit start

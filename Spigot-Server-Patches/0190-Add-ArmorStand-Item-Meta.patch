@@ -13,11 +13,11 @@ starting point for future additions in this area.
 Fixes GH-559
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
-index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82519250e1 100644
+index c593499aee3a2737cd80739ce61e7fba133d11ec..6b460841a8428727dd55a841fe5af06de9b1bdd1 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaArmorStand.java
-@@ -8,9 +8,22 @@ import org.bukkit.Material;
- import org.bukkit.configuration.serialization.DelegateDeserialization;
+@@ -9,9 +9,22 @@ import org.bukkit.configuration.serialization.DelegateDeserialization;
+ import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey;
  
  @DelegateDeserialization(CraftMetaItem.SerializableMeta.class)
 -public class CraftMetaArmorStand extends CraftMetaItem {
@@ -40,7 +40,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
      NBTTagCompound entityTag;
  
      CraftMetaArmorStand(CraftMetaItem meta) {
-@@ -21,6 +34,13 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -22,6 +35,13 @@ public class CraftMetaArmorStand extends CraftMetaItem {
          }
  
          CraftMetaArmorStand armorStand = (CraftMetaArmorStand) meta;
@@ -54,7 +54,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
          this.entityTag = armorStand.entityTag;
      }
  
-@@ -29,11 +49,47 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -30,11 +50,47 @@ public class CraftMetaArmorStand extends CraftMetaItem {
  
          if (tag.hasKey(ENTITY_TAG.NBT)) {
              entityTag = tag.getCompound(ENTITY_TAG.NBT);
@@ -102,7 +102,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
      }
  
      @Override
-@@ -56,6 +112,32 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -57,6 +113,32 @@ public class CraftMetaArmorStand extends CraftMetaItem {
      void applyToItem(NBTTagCompound tag) {
          super.applyToItem(tag);
  
@@ -135,7 +135,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
          if (entityTag != null) {
              tag.set(ENTITY_TAG.NBT, entityTag);
          }
-@@ -77,7 +159,7 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -78,7 +160,7 @@ public class CraftMetaArmorStand extends CraftMetaItem {
      }
  
      boolean isArmorStandEmpty() {
@@ -144,7 +144,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
      }
  
      @Override
-@@ -88,7 +170,13 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -89,7 +171,13 @@ public class CraftMetaArmorStand extends CraftMetaItem {
          if (meta instanceof CraftMetaArmorStand) {
              CraftMetaArmorStand that = (CraftMetaArmorStand) meta;
  
@@ -159,7 +159,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
          }
          return true;
      }
-@@ -103,9 +191,14 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -104,9 +192,14 @@ public class CraftMetaArmorStand extends CraftMetaItem {
          final int original;
          int hash = original = super.applyHash();
  
@@ -177,7 +177,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
  
          return original != hash ? CraftMetaArmorStand.class.hashCode() ^ hash : hash;
      }
-@@ -114,6 +207,28 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -115,6 +208,28 @@ public class CraftMetaArmorStand extends CraftMetaItem {
      Builder<String, Object> serialize(Builder<String, Object> builder) {
          super.serialize(builder);
  
@@ -206,7 +206,7 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
          return builder;
      }
  
-@@ -127,4 +242,56 @@ public class CraftMetaArmorStand extends CraftMetaItem {
+@@ -128,4 +243,56 @@ public class CraftMetaArmorStand extends CraftMetaItem {
  
          return clone;
      }
@@ -264,10 +264,10 @@ index 1a3549480be056368bd6c9d1a98335b3bb07d1d5..25b310ad3f1bcefd04406b7efd1ffa82
 +    // Paper end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
-index 9a41ad703ce382670f11cf84c4644d53f0e3cd1d..41627c49decca02635036c970674f958e4de1b4d 100644
+index 57a6e66866ea82caccbbbfd55948a081f50f6bbe..7f790c484fec77e1d1f1dc6abe0daa19d009ae46 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
-@@ -1418,6 +1418,14 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
+@@ -1442,6 +1442,14 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
                          CraftMetaCrossbow.CHARGED.NBT,
                          CraftMetaCrossbow.CHARGED_PROJECTILES.NBT,
                          CraftMetaSuspiciousStew.EFFECTS.NBT,
@@ -283,18 +283,10 @@ index 9a41ad703ce382670f11cf84c4644d53f0e3cd1d..41627c49decca02635036c970674f958
                          CraftMetaCompass.LODESTONE_POS.NBT,
                          CraftMetaCompass.LODESTONE_TRACKED.NBT
 diff --git a/src/test/java/org/bukkit/craftbukkit/inventory/ItemMetaTest.java b/src/test/java/org/bukkit/craftbukkit/inventory/ItemMetaTest.java
-index a33cb37f934f74865c49dd3fd483cf4ca5de85cf..ddbcbd565d5dcb5b1c8d46558e06887e85d589c5 100644
+index 9a351c137776ac622f4df7353bb353142b3a6ccc..42f577ed3508ba5a380648461e149f16ce97c9bd 100644
 --- a/src/test/java/org/bukkit/craftbukkit/inventory/ItemMetaTest.java
 +++ b/src/test/java/org/bukkit/craftbukkit/inventory/ItemMetaTest.java
-@@ -6,6 +6,7 @@ import java.util.ArrayList;
- import java.util.Arrays;
- import java.util.List;
- import java.util.UUID;
-+import com.destroystokyo.paper.inventory.meta.ArmorStandMeta; // Paper
- import net.minecraft.server.Block;
- import net.minecraft.server.IRegistry;
- import net.minecraft.server.ITileEntity;
-@@ -313,6 +314,7 @@ public class ItemMetaTest extends AbstractTestingBase {
+@@ -313,6 +313,7 @@ public class ItemMetaTest extends AbstractTestingBase {
                      final CraftMetaArmorStand meta = (CraftMetaArmorStand) cleanStack.getItemMeta();
                      meta.entityTag = new NBTTagCompound();
                      meta.entityTag.setBoolean("Small", true);

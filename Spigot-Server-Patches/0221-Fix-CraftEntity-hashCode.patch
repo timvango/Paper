@@ -21,7 +21,7 @@ check is essentially the same as this.getHandle() == other.getHandle()
 However, replaced it too to make it clearer of intent.
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
-index e3c66d45720e90dbd552c2aedfb4d96fb1639799..018eea17881feeb6583a5b1ae2ab0795e962095b 100644
+index 4c2a35fb33da19a15a220dc5e0c9fa3233d657fb..3642b17cafffd2818ee7a18d26bc25645f596115 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftEntity.java
 @@ -745,14 +745,15 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {

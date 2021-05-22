@@ -5,10 +5,10 @@ Subject: [PATCH] Add sendOpLevel API
 
 
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index ea5257cc94d084fe4e0b9d9685e51d8f70cb84cb..cb6464c89e02d29484554a9a2184996a256925d2 100644
+index 7aa9fb852dce23c53fee80e97e0dcdb278ae82ba..68a03821a5f06308a9c51fdf107d3924c44886c8 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -1793,6 +1793,17 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -1929,6 +1929,17 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       */
      @Nullable
      Firework boostElytra(@NotNull ItemStack firework);

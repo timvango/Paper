@@ -6,10 +6,10 @@ Subject: [PATCH] Make CraftWorld#loadChunk(int, int, false) load unconverted
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index fd314d9d530c347f9f78e81763a9a079b44aa751..d193667beca3da156d8ae17cd80f4bf4c1dbfc8c 100644
+index e7103b8021141071712759b1056eccb5e3da93b7..880bbf09f77f59824184c1c9dd1ca3c3df09dae9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -507,7 +507,7 @@ public class CraftWorld implements World {
+@@ -508,7 +508,7 @@ public class CraftWorld implements World {
      @Override
      public boolean loadChunk(int x, int z, boolean generate) {
          org.spigotmc.AsyncCatcher.catchOp("chunk load"); // Spigot

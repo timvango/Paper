@@ -17,10 +17,10 @@ will always work as intended in the past, those without will create implementati
 based inventories.
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/util/CraftInventoryCreator.java b/src/main/java/org/bukkit/craftbukkit/inventory/util/CraftInventoryCreator.java
-index b51321c8dd70a90ab149f456c7ffb4587c4fbd34..c1db7104e398df484f1e5400e98714aefd3315f2 100644
+index 94d807c5d09f165c6eedd0a1c4026c2b833806a0..3e56de295be0d03dddd3e54fcd7b05d4b9c74dc4 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/util/CraftInventoryCreator.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/util/CraftInventoryCreator.java
-@@ -40,10 +40,20 @@ public final class CraftInventoryCreator {
+@@ -40,6 +40,11 @@ public final class CraftInventoryCreator {
      }
  
      public Inventory createInventory(InventoryHolder holder, InventoryType type) {
@@ -31,6 +31,9 @@ index b51321c8dd70a90ab149f456c7ffb4587c4fbd34..c1db7104e398df484f1e5400e98714ae
 +        //noinspection ConstantConditions // Paper end
          return converterMap.get(type).createInventory(holder, type);
      }
+ 
+@@ -55,6 +60,11 @@ public final class CraftInventoryCreator {
+     // Paper end
  
      public Inventory createInventory(InventoryHolder holder, InventoryType type, String title) {
 +        // Paper start

@@ -5,24 +5,11 @@ Subject: [PATCH] Add Debug Entities option to debug dupe uuid issues
 
 Add -Ddebug.entities=true to your JVM flags to gain more information
 
-diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index 07941c987a0c644e896f49ce217c1c625dc25014..c863fd94ee77b81aec84223588e20eed974515d6 100644
---- a/src/main/java/net/minecraft/server/Entity.java
-+++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -76,6 +76,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
-     public com.destroystokyo.paper.loottable.PaperLootableInventoryData lootableData; // Paper
-     private CraftEntity bukkitEntity;
- 
-+    PlayerChunkMap.EntityTracker tracker; // Paper
-+    Throwable addedToWorldStack; // Paper - entity debug
-     public CraftEntity getBukkitEntity() {
-         if (bukkitEntity == null) {
-             bukkitEntity = CraftEntity.getEntity(world.getServer(), this);
-diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index 8862bbd73b627e37709d46e6aeeee70c89cbd821..4bbcd00950405a4bf3ce391b557049a3b1d4aee8 100644
---- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
-+++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-@@ -1093,6 +1093,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
+index d1e45dfb99074ec027d4f943391a024c726d93b2..66c808244bba70f827d8f15a96814251d352a046 100644
+--- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
++++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
+@@ -1147,6 +1147,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
              } else {
                  PlayerChunkMap.EntityTracker playerchunkmap_entitytracker = new PlayerChunkMap.EntityTracker(entity, i, j, entitytypes.isDeltaTracking());
  
@@ -30,7 +17,7 @@ index 8862bbd73b627e37709d46e6aeeee70c89cbd821..4bbcd00950405a4bf3ce391b557049a3
                  this.trackedEntities.put(entity.getId(), playerchunkmap_entitytracker);
                  playerchunkmap_entitytracker.track(this.world.getPlayers());
                  if (entity instanceof EntityPlayer) {
-@@ -1134,7 +1135,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -1188,7 +1189,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
          if (playerchunkmap_entitytracker1 != null) {
              playerchunkmap_entitytracker1.a();
          }
@@ -39,33 +26,21 @@ index 8862bbd73b627e37709d46e6aeeee70c89cbd821..4bbcd00950405a4bf3ce391b557049a3
      }
  
      protected void g() {
-diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 54d7d0da6ee998319db2454372ca283a9d571cdb..fa095bb55c09a3b5f8ab70bcce5a03c7eb93dcfa 100644
---- a/src/main/java/net/minecraft/server/World.java
-+++ b/src/main/java/net/minecraft/server/World.java
-@@ -68,6 +68,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
-     public boolean pvpMode;
-     public boolean keepSpawnInMemory = true;
-     public org.bukkit.generator.ChunkGenerator generator;
-+    public static final boolean DEBUG_ENTITIES = Boolean.getBoolean("debug.entities"); // Paper
- 
-     public boolean captureBlockStates = false;
-     public boolean captureTreeGeneration = false;
-diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 6fc0ccc029fc9d1f11f4325792977a67fa89a6c9..47c49389d5f025003a0a9876cab5eb67cabec145 100644
---- a/src/main/java/net/minecraft/server/WorldServer.java
-+++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -88,6 +88,9 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
+index d6a4ec132cadf8134a21f625f4ca978d37c643d0..650015f08ef4defe7510ff2f5cbd25364b733515 100644
+--- a/src/main/java/net/minecraft/server/level/WorldServer.java
++++ b/src/main/java/net/minecraft/server/level/WorldServer.java
+@@ -197,6 +197,9 @@ public class WorldServer extends World implements GeneratorAccessSeed {
      public final Convertable.ConversionSession convertable;
      public final UUID uuid;
-     boolean hasPhysicsEvent = true; // Paper
+     public boolean hasPhysicsEvent = true; // Paper
 +    private static Throwable getAddToWorldStackTrace(Entity entity) {
 +        return new Throwable(entity + " Added to world at " + new java.util.Date());
 +    }
  
      @Override public Chunk getChunkIfLoaded(int x, int z) { // Paper - this was added in world too but keeping here for NMS ABI
          return this.chunkProvider.getChunkAt(x, z, false);
-@@ -927,8 +930,28 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1038,8 +1041,28 @@ public class WorldServer extends World implements GeneratorAccessSeed {
      // CraftBukkit start
      private boolean addEntity0(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
          org.spigotmc.AsyncCatcher.catchOp("entity add"); // Spigot
@@ -95,7 +70,7 @@ index 6fc0ccc029fc9d1f11f4325792977a67fa89a6c9..47c49389d5f025003a0a9876cab5eb67
              // WorldServer.LOGGER.warn("Tried to add entity {} but it was marked as removed already", EntityTypes.getName(entity.getEntityType())); // CraftBukkit
              return false;
          } else if (this.isUUIDTaken(entity)) {
-@@ -1126,7 +1149,24 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -1237,7 +1260,24 @@ public class WorldServer extends World implements GeneratorAccessSeed {
                  }
              }
  
@@ -121,3 +96,36 @@ index 6fc0ccc029fc9d1f11f4325792977a67fa89a6c9..47c49389d5f025003a0a9876cab5eb67
              this.getChunkProvider().addEntity(entity);
              // CraftBukkit start - SPIGOT-5278
              if (entity instanceof EntityDrowned) {
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index bd9cd050c72792c3d5a2094991b21e3a998b2cd9..c88eea18e2e219f242c53ffb4e28cfc6d7bf318a 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -48,6 +48,7 @@ import net.minecraft.resources.MinecraftKey;
+ import net.minecraft.resources.ResourceKey;
+ import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.EntityPlayer;
++import net.minecraft.server.level.PlayerChunkMap;
+ import net.minecraft.server.level.TicketType;
+ import net.minecraft.server.level.WorldServer;
+ import net.minecraft.sounds.SoundCategory;
+@@ -161,6 +162,8 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, ne
+     public com.destroystokyo.paper.loottable.PaperLootableInventoryData lootableData; // Paper
+     private CraftEntity bukkitEntity;
+ 
++    PlayerChunkMap.EntityTracker tracker; // Paper
++    public Throwable addedToWorldStack; // Paper - entity debug
+     public CraftEntity getBukkitEntity() {
+         if (bukkitEntity == null) {
+             bukkitEntity = CraftEntity.getEntity(world.getServer(), this);
+diff --git a/src/main/java/net/minecraft/world/level/World.java b/src/main/java/net/minecraft/world/level/World.java
+index a9e7da1c848a6fe08fc112e445ceec1b7715d682..0d375af209e9768f430e08bd7a4bde1863b14da5 100644
+--- a/src/main/java/net/minecraft/world/level/World.java
++++ b/src/main/java/net/minecraft/world/level/World.java
+@@ -121,6 +121,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+     public boolean pvpMode;
+     public boolean keepSpawnInMemory = true;
+     public org.bukkit.generator.ChunkGenerator generator;
++    public static final boolean DEBUG_ENTITIES = Boolean.getBoolean("debug.entities"); // Paper
+ 
+     public boolean captureBlockStates = false;
+     public boolean captureTreeGeneration = false;

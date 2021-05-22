@@ -4,20 +4,11 @@ Date: Fri, 24 Aug 2018 11:50:26 -0500
 Subject: [PATCH] Add More Creeper API
 
 
-diff --git a/src/main/java/net/minecraft/server/EntityCreeper.java b/src/main/java/net/minecraft/server/EntityCreeper.java
-index 647795bc7ea68f9dbe9d3f6488eaec82159feb9f..79ef955070b2982be79cc58e40093624bd088ff0 100644
---- a/src/main/java/net/minecraft/server/EntityCreeper.java
-+++ b/src/main/java/net/minecraft/server/EntityCreeper.java
-@@ -14,7 +14,7 @@ public class EntityCreeper extends EntityMonster {
-     private static final DataWatcherObject<Boolean> POWERED = DataWatcher.a(EntityCreeper.class, DataWatcherRegistry.i);
-     private static final DataWatcherObject<Boolean> d = DataWatcher.a(EntityCreeper.class, DataWatcherRegistry.i); private static final DataWatcherObject<Boolean> isIgnitedDW = d; // Paper OBFHELPER
-     private int bo;
--    private int fuseTicks;
-+    public int fuseTicks; // Paper - public
-     public int maxFuseTicks = 30;
-     public int explosionRadius = 3;
-     private int bs;
-@@ -254,7 +254,18 @@ public class EntityCreeper extends EntityMonster {
+diff --git a/src/main/java/net/minecraft/world/entity/monster/EntityCreeper.java b/src/main/java/net/minecraft/world/entity/monster/EntityCreeper.java
+index cbb973e077e04e5221bcc837f434b7093bdbcc2a..b47f71ca1f1c8bbd1a521836d9cb5d676a33ec76 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/EntityCreeper.java
++++ b/src/main/java/net/minecraft/world/entity/monster/EntityCreeper.java
+@@ -290,7 +290,18 @@ public class EntityCreeper extends EntityMonster {
      }
  
      public void ignite() {
@@ -38,10 +29,10 @@ index 647795bc7ea68f9dbe9d3f6488eaec82159feb9f..79ef955070b2982be79cc58e40093624
  
      public boolean canCauseHeadDrop() {
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftCreeper.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftCreeper.java
-index 896405148c489011e4f06c43fe961045b7426377..075a5e77e2c2a873b048b9886d630e71238988da 100644
+index 167b8f0c742be07ee0c5d698e04d6e29addda70c..629518d4bb314a1d46e32397b6fb7b90bce94e83 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftCreeper.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftCreeper.java
-@@ -88,4 +88,18 @@ public class CraftCreeper extends CraftMonster implements Creeper {
+@@ -101,4 +101,14 @@ public class CraftCreeper extends CraftMonster implements Creeper {
      public EntityType getType() {
          return EntityType.CREEPER;
      }
@@ -53,10 +44,6 @@ index 896405148c489011e4f06c43fe961045b7426377..075a5e77e2c2a873b048b9886d630e71
 +
 +    public boolean isIgnited() {
 +        return getHandle().isIgnited();
-+    }
-+
-+    public int getFuseTicks() {
-+        return getHandle().fuseTicks;
 +    }
 +    // Paper end
  }

@@ -9,7 +9,7 @@ thread dumps at an interval until the point of crash.
 This will help diagnose what was going on in that time before the crash.
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index 89f1eb215a585eccd8498cb337e5894369e41867..f1c1c9c09c6bfe288a239d53953e55bb0c113c79 100644
+index bd508025b771424c942fd856c31d520b6f548082..62621562137cba4804f0465c58d25ca2786328e5 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
 @@ -25,6 +25,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,7 +20,7 @@ index 89f1eb215a585eccd8498cb337e5894369e41867..f1c1c9c09c6bfe288a239d53953e55bb
  
  public class PaperConfig {
  
-@@ -292,6 +293,14 @@ public class PaperConfig {
+@@ -297,6 +298,14 @@ public class PaperConfig {
          }
      }
  
@@ -36,10 +36,10 @@ index 89f1eb215a585eccd8498cb337e5894369e41867..f1c1c9c09c6bfe288a239d53953e55bb
      public static int tabSpamLimit = 500;
      private static void tabSpamLimiters() {
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 983868ef2b2d9bbec19ba8a23cb6376de015b53e..aea9e169f9a11378c176c0cc3ee5a0d59e6a4c38 100644
+index 5bbd3bb52b76b8b6cdf90c94bcb29f122f31c543..52c0dd4f2779125116d9dcccc2aef7a11af92945 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -898,6 +898,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -1019,6 +1019,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
                  this.a(this.serverPing);
  
                  // Spigot start
@@ -48,10 +48,10 @@ index 983868ef2b2d9bbec19ba8a23cb6376de015b53e..aea9e169f9a11378c176c0cc3ee5a0d5
                  long start = System.nanoTime(), curTime, tickSection = start; // Paper - Further improve server tick loop
                  lastTick = start - TICK_TIME; // Paper
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a6baf56e4db6f2942cf67d3e5a28506e35d22122..512f99a198db7a48bcb21aadbd38125260bce812 100644
+index 2bdee3fe7ad763a3b15259534796a9f457db7ee6..04e20cb1efb7dd4be13e7c01f86f671bc9924314 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -811,6 +811,7 @@ public final class CraftServer implements Server {
+@@ -810,6 +810,7 @@ public final class CraftServer implements Server {
  
      @Override
      public void reload() {
@@ -59,7 +59,7 @@ index a6baf56e4db6f2942cf67d3e5a28506e35d22122..512f99a198db7a48bcb21aadbd381252
          reloadCount++;
          configuration = YamlConfiguration.loadConfiguration(getConfigFile());
          commandsConfiguration = YamlConfiguration.loadConfiguration(getCommandsConfigFile());
-@@ -929,6 +930,7 @@ public final class CraftServer implements Server {
+@@ -928,6 +929,7 @@ public final class CraftServer implements Server {
          enablePlugins(PluginLoadOrder.STARTUP);
          enablePlugins(PluginLoadOrder.POSTWORLD);
          getPluginManager().callEvent(new ServerLoadEvent(ServerLoadEvent.LoadType.RELOAD));
@@ -68,7 +68,7 @@ index a6baf56e4db6f2942cf67d3e5a28506e35d22122..512f99a198db7a48bcb21aadbd381252
  
      @Override
 diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
-index b830bfefd2984f012de0e3877592e5198a2a02ea..25a0873553a0ec6b2913e0cfb928f98e6f3f0bb7 100644
+index 11f8a2e5bf43013bce8675ea310ff42eacf14754..564285c1c96f3faf99022eec639dbefed54f2a7d 100644
 --- a/src/main/java/org/spigotmc/SpigotConfig.java
 +++ b/src/main/java/org/spigotmc/SpigotConfig.java
 @@ -229,7 +229,7 @@ public class SpigotConfig
@@ -81,7 +81,7 @@ index b830bfefd2984f012de0e3877592e5198a2a02ea..25a0873553a0ec6b2913e0cfb928f98e
  
      public static boolean bungee;
 diff --git a/src/main/java/org/spigotmc/WatchdogThread.java b/src/main/java/org/spigotmc/WatchdogThread.java
-index 882cd398ee6babc3088ea0bb442d61fb46d8bf08..1827fb786338fa49d15a3ab231eb7f26a8fa93b6 100644
+index 4e0291be4bd5876bb5b5f62ebfa156635d4c758f..abaefa0b71104756e4b458abefe13d179e7a1724 100644
 --- a/src/main/java/org/spigotmc/WatchdogThread.java
 +++ b/src/main/java/org/spigotmc/WatchdogThread.java
 @@ -5,6 +5,7 @@ import java.lang.management.MonitorInfo;

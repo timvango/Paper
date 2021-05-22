@@ -7,11 +7,11 @@ These are a critical sign that somethin went wrong, and you've lost some data...
 
 We should kind of know about these things you know.
 
-diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 46de86d72ddee11026bef01098a5f3f31c6606cc..6fc0ccc029fc9d1f11f4325792977a67fa89a6c9 100644
---- a/src/main/java/net/minecraft/server/WorldServer.java
-+++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -966,7 +966,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
+index eb19b6fc87bfd4e500ea7836c1010a80b36abab2..d6a4ec132cadf8134a21f625f4ca978d37c643d0 100644
+--- a/src/main/java/net/minecraft/server/level/WorldServer.java
++++ b/src/main/java/net/minecraft/server/level/WorldServer.java
+@@ -1077,7 +1077,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
          if (entity1 == null) {
              return false;
          } else {

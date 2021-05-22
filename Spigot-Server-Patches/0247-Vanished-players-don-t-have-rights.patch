@@ -4,23 +4,11 @@ Date: Mon, 23 Jul 2018 14:22:26 +0200
 Subject: [PATCH] Vanished players don't have rights
 
 
-diff --git a/src/main/java/net/minecraft/server/BlockBase.java b/src/main/java/net/minecraft/server/BlockBase.java
-index e0ae51ede44de5c894df526c1fc6d94c46d72013..8bcca73ae48ee822d32a6d23be2e1056a376e5f6 100644
---- a/src/main/java/net/minecraft/server/BlockBase.java
-+++ b/src/main/java/net/minecraft/server/BlockBase.java
-@@ -453,6 +453,7 @@ public abstract class BlockBase {
-             return this.a != null ? this.a.b : this.b(iblockaccess, blockposition, VoxelShapeCollision.a());
-         }
- 
-+        public final VoxelShape getCollisionShape(IBlockAccess iblockaccess, BlockPosition blockposition, VoxelShapeCollision voxelshapecollision) { return this.b(iblockaccess, blockposition, voxelshapecollision); } // Paper - OBFHELPER
-         public VoxelShape b(IBlockAccess iblockaccess, BlockPosition blockposition, VoxelShapeCollision voxelshapecollision) {
-             return this.getBlock().c(this.p(), iblockaccess, blockposition, voxelshapecollision);
-         }
-diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
-index c863fd94ee77b81aec84223588e20eed974515d6..02e4ce705c2a7a1cdc7024a6c3db799db8922ce9 100644
---- a/src/main/java/net/minecraft/server/Entity.java
-+++ b/src/main/java/net/minecraft/server/Entity.java
-@@ -98,7 +98,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, Ke
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index c88eea18e2e219f242c53ffb4e28cfc6d7bf318a..3a46a5001cda7402a97ac8552650cf64e7881fad 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -184,7 +184,7 @@ public abstract class Entity implements INamableTileEntity, ICommandListener, ne
      private static double e = 1.0D;
      private final EntityTypes<?> f;
      private int id;
@@ -29,11 +17,19 @@ index c863fd94ee77b81aec84223588e20eed974515d6..02e4ce705c2a7a1cdc7024a6c3db799d
      public final List<Entity> passengers;
      protected int j;
      @Nullable
-diff --git a/src/main/java/net/minecraft/server/IProjectile.java b/src/main/java/net/minecraft/server/IProjectile.java
-index 0b62041f6dc9cb0151ea55407f6706cac134f1b5..97aed437adb98bc468ec757df8b6d375b5101834 100644
---- a/src/main/java/net/minecraft/server/IProjectile.java
-+++ b/src/main/java/net/minecraft/server/IProjectile.java
-@@ -129,8 +129,14 @@ public abstract class IProjectile extends Entity {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java
+index 8f14e1ebefe172e056a04bd7b6f55b9bbb1e7b2e..b44b18341331e5176e0f1851aa60cc425ccbd439 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/IProjectile.java
+@@ -4,6 +4,7 @@ import java.util.Iterator;
+ import java.util.UUID;
+ import javax.annotation.Nullable;
+ import net.minecraft.nbt.NBTTagCompound;
++import net.minecraft.server.level.EntityPlayer;
+ import net.minecraft.server.level.WorldServer;
+ import net.minecraft.util.MathHelper;
+ import net.minecraft.world.entity.Entity;
+@@ -158,8 +159,14 @@ public abstract class IProjectile extends Entity {
      protected boolean a(Entity entity) {
          if (!entity.isSpectator() && entity.isAlive() && entity.isInteractable()) {
              Entity entity1 = this.getShooter();
@@ -49,11 +45,11 @@ index 0b62041f6dc9cb0151ea55407f6706cac134f1b5..97aed437adb98bc468ec757df8b6d375
          } else {
              return false;
          }
-diff --git a/src/main/java/net/minecraft/server/ItemBlock.java b/src/main/java/net/minecraft/server/ItemBlock.java
-index 3bfcde5f7fa7f7f6393a9687e48fae8dc3aa33a0..bbb1de7d1adce6e986467db234b27518df4dd87f 100644
---- a/src/main/java/net/minecraft/server/ItemBlock.java
-+++ b/src/main/java/net/minecraft/server/ItemBlock.java
-@@ -154,7 +154,8 @@ public class ItemBlock extends Item {
+diff --git a/src/main/java/net/minecraft/world/item/ItemBlock.java b/src/main/java/net/minecraft/world/item/ItemBlock.java
+index ec12bea9de910824927ba31628b49f6713f31a29..59d52c252b2e59923b8e513dd4d2e1ec9ce34dc7 100644
+--- a/src/main/java/net/minecraft/world/item/ItemBlock.java
++++ b/src/main/java/net/minecraft/world/item/ItemBlock.java
+@@ -177,7 +177,8 @@ public class ItemBlock extends Item {
          EntityHuman entityhuman = blockactioncontext.getEntity();
          VoxelShapeCollision voxelshapecollision = entityhuman == null ? VoxelShapeCollision.a() : VoxelShapeCollision.a((Entity) entityhuman);
          // CraftBukkit start - store default return
@@ -63,43 +59,30 @@ index 3bfcde5f7fa7f7f6393a9687e48fae8dc3aa33a0..bbb1de7d1adce6e986467db234b27518
          org.bukkit.entity.Player player = (blockactioncontext.getEntity() instanceof EntityPlayer) ? (org.bukkit.entity.Player) blockactioncontext.getEntity().getBukkitEntity() : null;
  
          BlockCanBuildEvent event = new BlockCanBuildEvent(CraftBlock.at(blockactioncontext.getWorld(), blockactioncontext.getClickPosition()), player, CraftBlockData.fromData(iblockdata), defaultReturn);
-diff --git a/src/main/java/net/minecraft/server/VoxelShape.java b/src/main/java/net/minecraft/server/VoxelShape.java
-index 30ddad5d98817eeb621de66a1a333d5013bfa9b1..eb926b74e17fb2f88c1d6ce2fb546541f8e6e274 100644
---- a/src/main/java/net/minecraft/server/VoxelShape.java
-+++ b/src/main/java/net/minecraft/server/VoxelShape.java
-@@ -46,6 +46,7 @@ public abstract class VoxelShape {
-         return this.a.a();
-     }
- 
-+    public final VoxelShape offset(double x, double y, double z) { return this.a(x, y, z); } // Paper - OBFHELPER
-     public VoxelShape a(double d0, double d1, double d2) {
-         return (VoxelShape) (this.isEmpty() ? VoxelShapes.a() : new VoxelShapeArray(this.a, new DoubleListOffset(this.a(EnumDirection.EnumAxis.X), d0), new DoubleListOffset(this.a(EnumDirection.EnumAxis.Y), d1), new DoubleListOffset(this.a(EnumDirection.EnumAxis.Z), d2)));
-     }
-diff --git a/src/main/java/net/minecraft/server/VoxelShapes.java b/src/main/java/net/minecraft/server/VoxelShapes.java
-index ed0f9c5d29c4f88b7beee4b0ecdd7a56de2d7a9e..881cea7c466f29ff4a89db28d104e8500a548b1f 100644
---- a/src/main/java/net/minecraft/server/VoxelShapes.java
-+++ b/src/main/java/net/minecraft/server/VoxelShapes.java
-@@ -35,6 +35,7 @@ public final class VoxelShapes {
-         return a(new AxisAlignedBB(d0, d1, d2, d3, d4, d5));
-     }
- 
-+    public static final VoxelShape of(AxisAlignedBB axisAlignedbb) { return VoxelShapes.a(axisAlignedbb); } // Paper - OBFHELPER
-     public static VoxelShape a(AxisAlignedBB axisalignedbb) {
-         int i = a(axisalignedbb.minX, axisalignedbb.maxX);
-         int j = a(axisalignedbb.minY, axisalignedbb.maxY);
-@@ -129,6 +130,7 @@ public final class VoxelShapes {
-         }
-     }
- 
-+    public static final boolean applyOperation(VoxelShape voxelshape, VoxelShape voxelshape1, OperatorBoolean operatorboolean) { return VoxelShapes.c(voxelshape, voxelshape1, operatorboolean); } // Paper - OBFHELPER
-     public static boolean c(VoxelShape voxelshape, VoxelShape voxelshape1, OperatorBoolean operatorboolean) {
-         if (operatorboolean.apply(false, false)) {
-             throw (IllegalArgumentException) SystemUtils.c((Throwable) (new IllegalArgumentException()));
-diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 7affb75a97e49b67861b24de38ef83e72b0abd5a..ce596bd1268eb7d6d20709fe1e00a59ccc50957d 100644
---- a/src/main/java/net/minecraft/server/World.java
-+++ b/src/main/java/net/minecraft/server/World.java
-@@ -178,6 +178,46 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+diff --git a/src/main/java/net/minecraft/world/level/World.java b/src/main/java/net/minecraft/world/level/World.java
+index 8c7263f9dbb00cf6484e7f70b8d97639bab0cefc..07c5cdd00930a55fd412ef95f71f55ee908189a1 100644
+--- a/src/main/java/net/minecraft/world/level/World.java
++++ b/src/main/java/net/minecraft/world/level/World.java
+@@ -27,6 +27,7 @@ import net.minecraft.network.protocol.Packet;
+ import net.minecraft.resources.MinecraftKey;
+ import net.minecraft.resources.ResourceKey;
+ import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.EntityPlayer;
+ import net.minecraft.server.level.PlayerChunk;
+ import net.minecraft.sounds.SoundCategory;
+ import net.minecraft.sounds.SoundEffect;
+@@ -65,6 +66,10 @@ import net.minecraft.world.level.saveddata.maps.WorldMap;
+ import net.minecraft.world.level.storage.WorldData;
+ import net.minecraft.world.level.storage.WorldDataMutable;
+ import net.minecraft.world.phys.AxisAlignedBB;
++import net.minecraft.world.phys.shapes.OperatorBoolean;
++import net.minecraft.world.phys.shapes.VoxelShape;
++import net.minecraft.world.phys.shapes.VoxelShapeCollision;
++import net.minecraft.world.phys.shapes.VoxelShapes;
+ import net.minecraft.world.scores.Scoreboard;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+@@ -232,6 +237,46 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
          this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
      }
  
@@ -146,11 +129,55 @@ index 7affb75a97e49b67861b24de38ef83e72b0abd5a..ce596bd1268eb7d6d20709fe1e00a59c
      @Override
      public boolean s_() {
          return this.isClientSide;
+diff --git a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
+index 2902117fd2803741b053a04fda7f4414fb8593cb..10f4015b8c36e4e27cf7d0745ba70b8a9e60aff3 100644
+--- a/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
++++ b/src/main/java/net/minecraft/world/level/block/state/BlockBase.java
+@@ -505,6 +505,7 @@ public abstract class BlockBase {
+             return this.a != null ? this.a.b : this.b(iblockaccess, blockposition, VoxelShapeCollision.a());
+         }
+ 
++        public final VoxelShape getCollisionShape(IBlockAccess iblockaccess, BlockPosition blockposition, VoxelShapeCollision voxelshapecollision) { return this.b(iblockaccess, blockposition, voxelshapecollision); } // Paper - OBFHELPER
+         public VoxelShape b(IBlockAccess iblockaccess, BlockPosition blockposition, VoxelShapeCollision voxelshapecollision) {
+             return this.getBlock().c(this.p(), iblockaccess, blockposition, voxelshapecollision);
+         }
+diff --git a/src/main/java/net/minecraft/world/phys/shapes/VoxelShape.java b/src/main/java/net/minecraft/world/phys/shapes/VoxelShape.java
+index 1b82349b96b3ec9490d06d1c1d1cbf2b1578d313..887016224c16f8a38c10a98eb0e2ae6cb353a153 100644
+--- a/src/main/java/net/minecraft/world/phys/shapes/VoxelShape.java
++++ b/src/main/java/net/minecraft/world/phys/shapes/VoxelShape.java
+@@ -54,6 +54,7 @@ public abstract class VoxelShape {
+         return this.a.a();
+     }
+ 
++    public final VoxelShape offset(double x, double y, double z) { return this.a(x, y, z); } // Paper - OBFHELPER
+     public VoxelShape a(double d0, double d1, double d2) {
+         return (VoxelShape) (this.isEmpty() ? VoxelShapes.a() : new VoxelShapeArray(this.a, new DoubleListOffset(this.a(EnumDirection.EnumAxis.X), d0), new DoubleListOffset(this.a(EnumDirection.EnumAxis.Y), d1), new DoubleListOffset(this.a(EnumDirection.EnumAxis.Z), d2)));
+     }
+diff --git a/src/main/java/net/minecraft/world/phys/shapes/VoxelShapes.java b/src/main/java/net/minecraft/world/phys/shapes/VoxelShapes.java
+index fdd9e37a8c90fc3311e515355af0a0593efbdacc..cf32a4f63e8e59535c02a3f9c57f98833a2b0e83 100644
+--- a/src/main/java/net/minecraft/world/phys/shapes/VoxelShapes.java
++++ b/src/main/java/net/minecraft/world/phys/shapes/VoxelShapes.java
+@@ -45,6 +45,7 @@ public final class VoxelShapes {
+         return a(new AxisAlignedBB(d0, d1, d2, d3, d4, d5));
+     }
+ 
++    public static final VoxelShape of(AxisAlignedBB axisAlignedbb) { return VoxelShapes.a(axisAlignedbb); } // Paper - OBFHELPER
+     public static VoxelShape a(AxisAlignedBB axisalignedbb) {
+         int i = a(axisalignedbb.minX, axisalignedbb.maxX);
+         int j = a(axisalignedbb.minY, axisalignedbb.maxY);
+@@ -139,6 +140,7 @@ public final class VoxelShapes {
+         }
+     }
+ 
++    public static final boolean applyOperation(VoxelShape voxelshape, VoxelShape voxelshape1, OperatorBoolean operatorboolean) { return VoxelShapes.c(voxelshape, voxelshape1, operatorboolean); } // Paper - OBFHELPER
+     public static boolean c(VoxelShape voxelshape, VoxelShape voxelshape1, OperatorBoolean operatorboolean) {
+         if (operatorboolean.apply(false, false)) {
+             throw (IllegalArgumentException) SystemUtils.c((Throwable) (new IllegalArgumentException()));
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 50047901625527e90d4d2ceb2572f30811f2ee76..6b62317f6a5e8a9bb8fdfc901835d0c28d3eeeda 100644
+index 69bcd6dcfc62ab7b5666b8e185efa07a9adbc179..6d08487ff25b474b2372de37ea77aa0eb997d89a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-@@ -1207,6 +1207,14 @@ public class CraftEventFactory {
+@@ -1220,6 +1220,14 @@ public class CraftEventFactory {
          Projectile projectile = (Projectile) entity.getBukkitEntity();
          org.bukkit.entity.Entity collided = position.getEntity().getBukkitEntity();
          com.destroystokyo.paper.event.entity.ProjectileCollideEvent event = new com.destroystokyo.paper.event.entity.ProjectileCollideEvent(projectile, collided);

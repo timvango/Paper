@@ -4,11 +4,11 @@ Date: Sat, 9 Jun 2018 14:08:39 +0200
 Subject: [PATCH] Implement EntityTeleportEndGatewayEvent
 
 
-diff --git a/src/main/java/net/minecraft/server/TileEntityEndGateway.java b/src/main/java/net/minecraft/server/TileEntityEndGateway.java
-index 6a0f7b02c5a2663bb7304a1f8c6cbf1603507d45..5550fd9ea6bcae07dcdf431322cb0da0b26a6d71 100644
---- a/src/main/java/net/minecraft/server/TileEntityEndGateway.java
-+++ b/src/main/java/net/minecraft/server/TileEntityEndGateway.java
-@@ -168,9 +168,20 @@ public class TileEntityEndGateway extends TileEntityEnderPortal implements ITick
+diff --git a/src/main/java/net/minecraft/world/level/block/entity/TileEntityEndGateway.java b/src/main/java/net/minecraft/world/level/block/entity/TileEntityEndGateway.java
+index 2808cd0b100bd65a730aba315ab47a59a4621b30..b7548d0b3938d95328fc86db4000190532eaa8f5 100644
+--- a/src/main/java/net/minecraft/world/level/block/entity/TileEntityEndGateway.java
++++ b/src/main/java/net/minecraft/world/level/block/entity/TileEntityEndGateway.java
+@@ -194,9 +194,20 @@ public class TileEntityEndGateway extends TileEntityEnderPortal implements ITick
  
                  }
                  // CraftBukkit end

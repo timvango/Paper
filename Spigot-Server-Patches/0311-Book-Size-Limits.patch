@@ -6,10 +6,10 @@ Subject: [PATCH] Book Size Limits
 Puts some limits on the size of books.
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index ba7fdf482ef8536074fcc3867d7fc142fcfe8ce8..2aca8cc2be963b2b015e52cdec6b3843011f1ccb 100644
+index 3139c194f9b1bc3510d51a81f13ae43d00a3dc29..13edb435b3fa65b4980bd7472aa5a5196f4d5b2b 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-@@ -334,4 +334,11 @@ public class PaperConfig {
+@@ -339,4 +339,11 @@ public class PaperConfig {
              velocitySecretKey = secret.getBytes(StandardCharsets.UTF_8);
          }
      }
@@ -21,19 +21,11 @@ index ba7fdf482ef8536074fcc3867d7fc142fcfe8ce8..2aca8cc2be963b2b015e52cdec6b3843
 +        maxBookTotalSizeMultiplier = getDouble("settings.book-size.total-multiplier", maxBookTotalSizeMultiplier);
 +    }
  }
-diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index cc141f02d5a2b1a5c50e5583d3537d5883762db1..6ad02246267f4d95f82164b70c30ac2955c563fe 100644
---- a/src/main/java/net/minecraft/server/PlayerConnection.java
-+++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -20,6 +20,7 @@ import java.util.function.Consumer;
- import java.util.stream.Collectors;
- import java.util.stream.Stream;
- import javax.annotation.Nullable;
-+import org.apache.commons.lang3.StringEscapeUtils;
- import org.apache.commons.lang3.StringUtils;
- import org.apache.logging.log4j.LogManager;
- import org.apache.logging.log4j.Logger;
-@@ -850,6 +851,52 @@ public class PlayerConnection implements PacketListenerPlayIn {
+diff --git a/src/main/java/net/minecraft/server/network/PlayerConnection.java b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+index 59617fceecb08edf665902f30ea7064e6333bb96..7158d3e3a7e2912d8d170aca4096355d43645cfa 100644
+--- a/src/main/java/net/minecraft/server/network/PlayerConnection.java
++++ b/src/main/java/net/minecraft/server/network/PlayerConnection.java
+@@ -1001,6 +1001,52 @@ public class PlayerConnection implements PacketListenerPlayIn {
  
      @Override
      public void a(PacketPlayInBEdit packetplayinbedit) {

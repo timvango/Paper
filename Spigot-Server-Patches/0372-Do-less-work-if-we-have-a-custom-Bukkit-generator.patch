@@ -7,10 +7,10 @@ If the Bukkit generator already has a spawn, use it immediately instead
 of spending time generating one that we won't use
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 416658a2ddfb11c4a6929807b4e9d8bd8f708e2d..bf3da57c1e709acb3fa9243fb3bb6eaf0613f145 100644
+index ef13e310a8a452d2ba1d9c8bac72f9baf2693de0..a118187e86238fd4019ba5c25269d5ee80fc56f2 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -509,12 +509,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -630,12 +630,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          } else if (flag1) {
              iworlddataserver.setSpawn(BlockPosition.ZERO.up(), 0.0F);
          } else {
@@ -24,7 +24,7 @@ index 416658a2ddfb11c4a6929807b4e9d8bd8f708e2d..bf3da57c1e709acb3fa9243fb3bb6eaf
              // CraftBukkit start
              if (worldserver.generator != null) {
                  Random rand = new Random(worldserver.getSeed());
-@@ -530,6 +525,15 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -651,6 +646,15 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
                  }
              }
              // CraftBukkit end
