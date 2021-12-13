@@ -5,10 +5,9 @@ Paper ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/
 How To (PlayParadise Patches)
 ------
 To update the Playaradise PaperMC fork to the newest upstream version:
-  * ./paper clean
-  * ./paper patch
-  * ./paper rebuild
-  * ./paper jar
+  * ./gradlew clean
+  * ./gradlew applyPatches
+  * ./gradlew reobfJar
 
 High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.
 
