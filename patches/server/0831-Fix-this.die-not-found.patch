@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Tim van Gompel <timvangompel@gmail.com>
+Date: Mon, 13 Dec 2021 10:34:33 +0100
+Subject: [PATCH] Fix this.die() not found
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
+index a2cc701450dfefb17ed343a30ce7d7d8ee777e51..af8d5b0d3c521df0db4b37549f640eb1bc30aa04 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrowableProjectile.java
+@@ -90,7 +90,7 @@ public abstract class ThrowableProjectile extends Projectile {
+         float f;
+ 
+         if (this.isInWater()) {
+-            this.die();
++            this.remove();
+             f = 0F;
+         } else {
+             f = 0.99F;
