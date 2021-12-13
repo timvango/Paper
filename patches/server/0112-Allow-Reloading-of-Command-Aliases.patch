@@ -6,10 +6,10 @@ Subject: [PATCH] Allow Reloading of Command Aliases
 Reload the aliases stored in commands.yml
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 120c649365ee2567a5bab75c8d389b2455b0377e..54d8cbbb610fa198db8dfcca691fb0435d4134a2 100644
+index 8b438464892f9d78457a2b09cb4670da2e356549..53e3ab7845934e0bbc1923be84eeb34e72794777 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2420,5 +2420,24 @@ public final class CraftServer implements Server {
+@@ -2497,5 +2497,24 @@ public final class CraftServer implements Server {
          DefaultPermissions.registerCorePermissions();
          CraftDefaultPermissions.registerCorePermissions();
      }
