@@ -14,18 +14,18 @@ big slowdown in execution but throwing an exception at same time to raise awaren
 that it is happening so that plugin authors can fix their code to stop executing commands async.
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 8dfc214b57f77c86f3e3f52ef8b6058295bf7be9..25117f4b7f6139688c1845a1dc257f7d5c268fde 100644
+index 357ff7f3ade2d59a7a2b3d93d7d35534565b6add..e27be8fb00360d546557bdbfec2907736145fa0f 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -1853,6 +1853,29 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+@@ -1948,6 +1948,29 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
          }
  
          if (!async && s.startsWith("/")) {
 +            // Paper Start
 +            if (!org.spigotmc.AsyncCatcher.shuttingDown && !org.bukkit.Bukkit.isPrimaryThread()) {
 +                final String fCommandLine = s;
-+                MinecraftServer.LOGGER.log(org.apache.logging.log4j.Level.ERROR, "Command Dispatched Async: " + fCommandLine);
-+                MinecraftServer.LOGGER.log(org.apache.logging.log4j.Level.ERROR, "Please notify author of plugin causing this execution to fix this bug! see: http://bit.ly/1oSiM6C", new Throwable());
++                LOGGER.error("Command Dispatched Async: " + fCommandLine);
++                LOGGER.error("Please notify author of plugin causing this execution to fix this bug! see: http://bit.ly/1oSiM6C", new Throwable());
 +                Waitable wait = new Waitable() {
 +                    @Override
 +                    protected Object evaluate() {
@@ -48,10 +48,10 @@ index 8dfc214b57f77c86f3e3f52ef8b6058295bf7be9..25117f4b7f6139688c1845a1dc257f7d
          } else if (this.player.getChatVisibility() == ChatVisiblity.SYSTEM) {
              // Do nothing, this is coming from a plugin
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 528687b7672ebf6e25fc0fc120fffe158e543bb3..99c1ca9a93092465c08723b919aa61dff747bd66 100644
+index a830c5c8603eacfe52bdcb15cfa5f52cad1eba47..61f521f6e5e9e5b1e01e182df5e0f37c124d259f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -828,6 +828,28 @@ public final class CraftServer implements Server {
+@@ -861,6 +861,28 @@ public final class CraftServer implements Server {
          Validate.notNull(commandLine, "CommandLine cannot be null");
          org.spigotmc.AsyncCatcher.catchOp("command dispatch"); // Spigot
  

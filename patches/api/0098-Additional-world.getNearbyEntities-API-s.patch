@@ -6,7 +6,7 @@ Subject: [PATCH] Additional world.getNearbyEntities API's
 Provides more methods to get nearby entities, and filter by types and predicates
 
 diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
-index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c1690b178777 100644
+index e0683e69029e8ac423bda79521045b06673eabf3..cf7baa9cd691b02aeaa4d94d5e999e661e003a44 100644
 --- a/src/main/java/org/bukkit/World.java
 +++ b/src/main/java/org/bukkit/World.java
 @@ -1,6 +1,9 @@
@@ -19,13 +19,13 @@ index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c169
  import java.util.Collection;
  import java.util.HashMap;
  import java.util.List;
-@@ -652,6 +655,256 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
+@@ -657,6 +660,256 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
      @NotNull
      public Collection<Entity> getEntitiesByClasses(@NotNull Class<?>... classes);
  
 +    // Paper start
 +    /**
-+     * Gets nearby players within the specified radius (bounding box)
++     * Gets nearby LivingEntities within the specified radius (bounding box)
 +     * @param loc Center location
 +     * @param radius Radius
 +     * @return the collection of entities near location. This will always be a non-null collection.
@@ -36,7 +36,7 @@ index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c169
 +    }
 +
 +    /**
-+     * Gets nearby players within the specified radius (bounding box)
++     * Gets nearby LivingEntities within the specified radius (bounding box)
 +     * @param loc Center location
 +     * @param xzRadius X/Z Radius
 +     * @param yRadius Y Radius
@@ -48,7 +48,7 @@ index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c169
 +    }
 +
 +    /**
-+     * Gets nearby players within the specified radius (bounding box)
++     * Gets nearby LivingEntities within the specified radius (bounding box)
 +     * @param loc Center location
 +     * @param xRadius X Radius
 +     * @param yRadius Y Radius
@@ -61,7 +61,7 @@ index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c169
 +    }
 +
 +    /**
-+     * Gets nearby players within the specified radius (bounding box)
++     * Gets nearby LivingEntities within the specified radius (bounding box)
 +     * @param loc Center location
 +     * @param radius X Radius
 +     * @param predicate a predicate used to filter results
@@ -73,7 +73,7 @@ index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c169
 +    }
 +
 +    /**
-+     * Gets nearby players within the specified radius (bounding box)
++     * Gets nearby LivingEntities within the specified radius (bounding box)
 +     * @param loc Center location
 +     * @param xzRadius X/Z Radius
 +     * @param yRadius Y Radius
@@ -86,7 +86,7 @@ index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c169
 +    }
 +
 +    /**
-+     * Gets nearby players within the specified radius (bounding box)
++     * Gets nearby LivingEntities within the specified radius (bounding box)
 +     * @param loc Center location
 +     * @param xRadius X Radius
 +     * @param yRadius Y Radius
@@ -277,7 +277,7 @@ index cec39714294127478b6e73452354ba7ccab78b25..e8b94ae777cad907dbb31c9ea5a3c169
       * Get a list of all players in this World
       *
 diff --git a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
-index 25e0d571710403c334bd73ce1b97109dd65c3244..033960f566861e303b9cb61aae4c02add501d93f 100644
+index c30b44ff26f8f253902754452a0816f07c7fd035..9acf1fb404ccf9b3bc06a448c3099ca2e838facf 100644
 --- a/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 +++ b/src/main/java/org/bukkit/event/player/AsyncPlayerPreLoginEvent.java
 @@ -42,8 +42,7 @@ public class AsyncPlayerPreLoginEvent extends Event {

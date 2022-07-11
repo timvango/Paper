@@ -6,10 +6,10 @@ Subject: [PATCH] Add command to reload permissions.yml and require confirm to
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index f1612106fa284f9d69f4b8981e5e5efac22765b8..0a2fc619ec9f28b43920cedcd18b75edfa66a36b 100644
+index e13ffa85390f2feda49309ba02ccf75856e4c8f2..c015c0b7678a141c84f0c0e339fe7c2a93988685 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -1904,6 +1904,13 @@ public final class Bukkit {
+@@ -2112,6 +2112,13 @@ public final class Bukkit {
      public static org.bukkit.command.CommandMap getCommandMap() {
          return server.getCommandMap();
      }
@@ -24,10 +24,10 @@ index f1612106fa284f9d69f4b8981e5e5efac22765b8..0a2fc619ec9f28b43920cedcd18b75ed
  
      @NotNull
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 30252583c457a1afafa4172321e13673fb19c08f..07146beb9009e7f631905db0c86a4f4a048039da 100644
+index 1dcf90071bae51e6b767ac26eb6624d372acac68..7204f8ea6271dbb94406f07bc98ec322f928fcea 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1682,4 +1682,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1863,4 +1863,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
      @NotNull
      Spigot spigot();
      // Spigot end
@@ -35,7 +35,7 @@ index 30252583c457a1afafa4172321e13673fb19c08f..07146beb9009e7f631905db0c86a4f4a
 +    void reloadPermissions(); // Paper
  }
 diff --git a/src/main/java/org/bukkit/command/defaults/ReloadCommand.java b/src/main/java/org/bukkit/command/defaults/ReloadCommand.java
-index 50cc311be7904cc8fc6070a21c8e4de3a489fd20..c62da4131b17e66892678e8b618fb9ba3de93b56 100644
+index 50cc311be7904cc8fc6070a21c8e4de3a489fd20..5fa9d648bc780e874f658597f1a24715bccac5cb 100644
 --- a/src/main/java/org/bukkit/command/defaults/ReloadCommand.java
 +++ b/src/main/java/org/bukkit/command/defaults/ReloadCommand.java
 @@ -13,15 +13,35 @@ public class ReloadCommand extends BukkitCommand {
@@ -58,17 +58,17 @@ index 50cc311be7904cc8fc6070a21c8e4de3a489fd20..c62da4131b17e66892678e8b618fb9ba
 +        if (args.length == 1) {
 +            if (args[0].equalsIgnoreCase("permissions")) {
 +                Bukkit.getServer().reloadPermissions();
-+                Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Permissions successfully reloaded.");
++                Command.broadcastCommandMessage(sender, net.kyori.adventure.text.Component.text("Permissions successfully reloaded.", net.kyori.adventure.text.format.NamedTextColor.GREEN));
 +                return true;
 +            } else if ("confirm".equalsIgnoreCase(args[0])) {
 +                confirmed = true;
 +            } else {
-+                Command.broadcastCommandMessage(sender, ChatColor.RED + "Usage: " + usageMessage);
++                Command.broadcastCommandMessage(sender, net.kyori.adventure.text.Component.text("Usage: " + usageMessage, net.kyori.adventure.text.format.NamedTextColor.RED));
 +                return true;
 +            }
 +        }
 +        if (!confirmed) {
-+            Command.broadcastCommandMessage(sender, ChatColor.RED + "Are you sure you wish to reload your server? Doing so may cause bugs and memory leaks. It is recommended to restart instead of using /reload. To confirm, please type " + ChatColor.YELLOW + "/reload confirm");
++            Command.broadcastCommandMessage(sender, net.kyori.adventure.text.Component.text("Are you sure you wish to reload your server? Doing so may cause bugs and memory leaks. It is recommended to restart instead of using /reload. To confirm, please type ", net.kyori.adventure.text.format.NamedTextColor.RED).append(net.kyori.adventure.text.Component.text("/reload confirm", net.kyori.adventure.text.format.NamedTextColor.YELLOW)));
 +            return true;
 +        }
 +        // Paper end
@@ -85,10 +85,10 @@ index 50cc311be7904cc8fc6070a21c8e4de3a489fd20..c62da4131b17e66892678e8b618fb9ba
      }
  }
 diff --git a/src/main/java/org/bukkit/plugin/SimplePluginManager.java b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
-index 1fbf690403eefe017b146c141c6d47d9b8d9d4bb..3ffe519b759f440f56f3054b0d3e4120b59f8c62 100644
+index b7cd4b9e4fd5f98aafbc0fe5ad6883eeb50dea56..efe0e5e6b43c50c6a41ee3baa44beb7d883b551a 100644
 --- a/src/main/java/org/bukkit/plugin/SimplePluginManager.java
 +++ b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
-@@ -905,4 +905,13 @@ public final class SimplePluginManager implements PluginManager {
+@@ -900,4 +900,13 @@ public final class SimplePluginManager implements PluginManager {
      public void useTimings(boolean use) {
          co.aikar.timings.Timings.setTimingsEnabled(use); // Paper
      }

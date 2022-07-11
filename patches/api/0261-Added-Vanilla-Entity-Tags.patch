@@ -5,13 +5,13 @@ Subject: [PATCH] Added Vanilla Entity Tags
 
 
 diff --git a/src/main/java/org/bukkit/Tag.java b/src/main/java/org/bukkit/Tag.java
-index 34d23f53acf00620223731c4fdacffde9cff41a8..ddd195a834d1756c903644fc1faffe7ebcb238ed 100644
+index 33f022a01e44e6b806e6d38eef003da161b6be53..9694b862d62afbaa831735a6f6d095315bcdf37c 100644
 --- a/src/main/java/org/bukkit/Tag.java
 +++ b/src/main/java/org/bukkit/Tag.java
-@@ -698,6 +698,44 @@ public interface Tag<T extends Keyed> extends Keyed {
-      * Vanilla tag representing entities extra susceptible to freezing.
+@@ -811,6 +811,44 @@ public interface Tag<T extends Keyed> extends Keyed {
+      * Vanilla tag representing entities which can be eaten by frogs.
       */
-     Tag<EntityType> ENTITY_TYPES_FREEZE_HURTS_EXTRA_TYPES = Bukkit.getTag(REGISTRY_ENTITY_TYPES, NamespacedKey.minecraft("freeze_hurts_extra_types"), EntityType.class);
+     Tag<EntityType> ENTITY_TYPES_FROG_FOOD = Bukkit.getTag(REGISTRY_ENTITY_TYPES, NamespacedKey.minecraft("frog_food"), EntityType.class);
 +    // Paper start
 +    /**
 +     * Key for the built-in entity registry

@@ -1,8 +1,11 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "7.1.0" apply false
-    id("io.papermc.paperweight.core") version "1.3.2"
+    id("com.github.johnrengelman.shadow") version "7.1.2" apply false
+    id("io.papermc.paperweight.core") version "1.3.8"
 }
 
 allprojects {
@@ -16,6 +19,8 @@ allprojects {
     }
 }
 
+val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
+
 subprojects {
     tasks.withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.name()
@@ -27,28 +32,39 @@ subprojects {
     tasks.withType<ProcessResources> {
         filteringCharset = Charsets.UTF_8.name()
     }
-
-    if (name == "Paper-MojangAPI") {
-        return@subprojects
+    tasks.withType<Test> {
+        testLogging {
+            showStackTraces = true
+            exceptionFormat = TestExceptionFormat.FULL
+            events(TestLogEvent.STANDARD_OUT)
+        }
     }
 
     repositories {
         mavenCentral()
-        maven("https://papermc.io/repo/repository/maven-public/")
+        maven(paperMavenPublicUrl)
     }
 }
 
+val spigotDecompiler: Configuration by configurations.creating
+
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/") {
-        content { onlyForConfigurations("paperclip") }
+    maven(paperMavenPublicUrl) {
+        content {
+            onlyForConfigurations(
+                configurations.paperclip.name,
+                spigotDecompiler.name,
+            )
+        }
     }
 }
 
 dependencies {
-    paramMappings("net.fabricmc:yarn:1.18.1+build.1:mergedv2")
-    remapper("net.fabricmc:tiny-remapper:0.7.0:fat")
-    decompiler("net.minecraftforge:forgeflower:1.5.498.22")
+    paramMappings("net.fabricmc:yarn:1.19+build.1:mergedv2")
+    remapper("net.fabricmc:tiny-remapper:0.8.2:fat")
+    decompiler("net.minecraftforge:forgeflower:1.5.605.7")
+    spigotDecompiler("io.papermc:patched-spigot-fernflower:0.1+build.6")
     paperclip("io.papermc:paperclip:3.0.2")
 }
 
@@ -56,9 +72,13 @@ paperweight {
     minecraftVersion.set(providers.gradleProperty("mcVersion"))
     serverProject.set(project(":paper-server"))
 
-    paramMappingsRepo.set("https://maven.fabricmc.net/")
-    remapRepo.set("https://maven.fabricmc.net/")
-    decompileRepo.set("https://files.minecraftforge.net/maven/")
+    paramMappingsRepo.set(paperMavenPublicUrl)
+    remapRepo.set(paperMavenPublicUrl)
+    decompileRepo.set(paperMavenPublicUrl)
+
+    craftBukkit {
+        fernFlowerJar.set(layout.file(spigotDecompiler.elements.map { it.single().asFile }))
+    }
 
     paper {
         spigotApiPatchDir.set(layout.projectDirectory.dir("patches/api"))
@@ -86,14 +106,12 @@ tasks.generateDevelopmentBundle {
     mojangApiCoordinates.set("io.papermc.paper:paper-mojangapi")
     libraryRepositories.addAll(
         "https://repo.maven.apache.org/maven2/",
-        "https://libraries.minecraft.net/",
-        "https://papermc.io/repo/repository/maven-public/",
-        "https://maven.fabricmc.net/",
+        paperMavenPublicUrl,
     )
 }
 
 publishing {
-    if (project.providers.gradleProperty("publishDevBundle").forUseAtConfigurationTime().isPresent) {
+    if (project.providers.gradleProperty("publishDevBundle").isPresent) {
         publications.create<MavenPublication>("devBundle") {
             artifact(tasks.generateDevelopmentBundle) {
                 artifactId = "dev-bundle"
@@ -105,7 +123,7 @@ publishing {
 allprojects {
     publishing {
         repositories {
-            maven("https://papermc.io/repo/repository/maven-snapshots/") {
+            maven("https://repo.papermc.io/repository/maven-snapshots/") {
                 name = "paperSnapshots"
                 credentials(PasswordCredentials::class)
             }
@@ -116,5 +134,11 @@ allprojects {
 tasks.register("printMinecraftVersion") {
     doLast {
         println(providers.gradleProperty("mcVersion").get().trim())
+    }
+}
+
+tasks.register("printPaperVersion") {
+    doLast {
+        println(project.version)
     }
 }

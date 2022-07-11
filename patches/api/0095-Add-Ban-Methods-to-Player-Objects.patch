@@ -8,10 +8,10 @@ Allows a more logical API for banning players.
 player.banPlayer("Breaking the rules");
 
 diff --git a/src/main/java/org/bukkit/OfflinePlayer.java b/src/main/java/org/bukkit/OfflinePlayer.java
-index 58313929f81509030216a0e5e3869da63e11108e..6cf05fed701c67a2c797a4e0839c795802a238a1 100644
+index c5eed3234a8c04bfa9d707685746fc2b40ec8bfc..93f86bb30725dff5dbfcccf15012ffd1cee237bf 100644
 --- a/src/main/java/org/bukkit/OfflinePlayer.java
 +++ b/src/main/java/org/bukkit/OfflinePlayer.java
-@@ -45,6 +45,61 @@ public interface OfflinePlayer extends ServerOperator, AnimalTamer, Configuratio
+@@ -58,6 +58,61 @@ public interface OfflinePlayer extends ServerOperator, AnimalTamer, Configuratio
       * @return true if banned, otherwise false
       */
      public boolean isBanned();
@@ -74,21 +74,10 @@ index 58313929f81509030216a0e5e3869da63e11108e..6cf05fed701c67a2c797a4e0839c7958
      /**
       * Checks if this player is whitelisted or not
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index da5dd22e75b998495258a482557221ebd52e0c39..07ae612268a5857cedf8c646a09eb30c9b0a036b 100644
+index 2eb9b5b2f7449e381914be26aec4e0236c368f47..5093a978dd44f0e6e14af7d8e12b50b602f0b2bd 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -5,6 +5,10 @@ import java.util.UUID;
- import com.destroystokyo.paper.Title; // Paper
- import net.kyori.adventure.text.Component;
- import com.destroystokyo.paper.profile.PlayerProfile; // Paper
-+import java.util.Date; // Paper
-+import org.bukkit.BanEntry; // Paper
-+import org.bukkit.BanList; // Paper
-+import org.bukkit.Bukkit; // Paper
- import org.bukkit.DyeColor;
- import org.bukkit.Effect;
- import org.bukkit.GameMode;
-@@ -712,6 +716,162 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -750,6 +750,162 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
      public void sendMap(@NotNull MapView map);
  
      // Paper start
@@ -100,7 +89,7 @@ index da5dd22e75b998495258a482557221ebd52e0c39..07ae612268a5857cedf8c646a09eb30c
 +     */
 +    // For reference, Bukkit defines this as nullable, while they impl isn't, we'll follow API.
 +    @Nullable
-+    public default BanEntry banPlayerFull(@Nullable String reason) {
++    public default org.bukkit.BanEntry banPlayerFull(@Nullable String reason) {
 +        return banPlayerFull(reason, null, null);
 +    }
 +
@@ -112,7 +101,7 @@ index da5dd22e75b998495258a482557221ebd52e0c39..07ae612268a5857cedf8c646a09eb30c
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerFull(@Nullable String reason, @Nullable String source) {
++    public default org.bukkit.BanEntry banPlayerFull(@Nullable String reason, @Nullable String source) {
 +        return banPlayerFull(reason, null, source);
 +    }
 +
@@ -124,7 +113,7 @@ index da5dd22e75b998495258a482557221ebd52e0c39..07ae612268a5857cedf8c646a09eb30c
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerFull(@Nullable String reason, @Nullable Date expires) {
++    public default org.bukkit.BanEntry banPlayerFull(@Nullable String reason, @Nullable java.util.Date expires) {
 +        return banPlayerFull(reason, expires, null);
 +    }
 +
@@ -137,102 +126,102 @@ index da5dd22e75b998495258a482557221ebd52e0c39..07ae612268a5857cedf8c646a09eb30c
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerFull(@Nullable String reason, @Nullable Date expires, @Nullable String source) {
++    public default org.bukkit.BanEntry banPlayerFull(@Nullable String reason, @Nullable java.util.Date expires, @Nullable String source) {
 +        banPlayer(reason, expires, source);
 +        return banPlayerIP(reason, expires, source, true);
 +    }
 +
 +    /**
 +     * Permanently Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     *
 +     * @param reason Reason for ban
 +     * @param kickPlayer Whether or not to kick the player afterwards
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason, boolean kickPlayer) {
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason, boolean kickPlayer) {
 +        return banPlayerIP(reason, null, null, kickPlayer);
 +    }
 +
 +    /**
 +     * Permanently Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     * @param reason Reason for ban
 +     * @param source Source of ban, or null for default
 +     * @param kickPlayer Whether or not to kick the player afterwards
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason, @Nullable String source, boolean kickPlayer) {
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason, @Nullable String source, boolean kickPlayer) {
 +        return banPlayerIP(reason, null, source, kickPlayer);
 +    }
 +
 +    /**
 +     * Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     * @param reason Reason for Ban
 +     * @param expires When to expire the ban
 +     * @param kickPlayer Whether or not to kick the player afterwards
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason, @Nullable Date expires, boolean kickPlayer) {
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason, @Nullable java.util.Date expires, boolean kickPlayer) {
 +        return banPlayerIP(reason, expires, null, kickPlayer);
 +    }
 +
 +    /**
 +     * Permanently Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     *
 +     * @param reason Reason for ban
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason) {
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason) {
 +        return banPlayerIP(reason, null, null);
 +    }
 +
 +    /**
 +     * Permanently Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     * @param reason Reason for ban
 +     * @param source Source of ban, or null for default
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason, @Nullable String source) {
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason, @Nullable String source) {
 +        return banPlayerIP(reason, null, source);
 +    }
 +
 +    /**
 +     * Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     * @param reason Reason for Ban
 +     * @param expires When to expire the ban
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason, @Nullable Date expires) {
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason, @Nullable java.util.Date expires) {
 +        return banPlayerIP(reason, expires, null);
 +    }
 +
 +    /**
 +     * Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     * @param reason Reason for Ban
 +     * @param expires When to expire the ban
 +     * @param source Source of the banm or null for default
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason, @Nullable Date expires, @Nullable String source) {
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason, @Nullable java.util.Date expires, @Nullable String source) {
 +        return banPlayerIP(reason, expires, source, true);
 +    }
 +
 +    /**
 +     * Bans the IP address currently used by the player.
-+     * Does not ban the Profile, use {@link #banPlayerFull(String, Date, String)}
++     * Does not ban the Profile, use {@link #banPlayerFull(String, java.util.Date, String)}
 +     * @param reason Reason for Ban
 +     * @param expires When to expire the ban
 +     * @param source Source of the banm or null for default
@@ -240,8 +229,8 @@ index da5dd22e75b998495258a482557221ebd52e0c39..07ae612268a5857cedf8c646a09eb30c
 +     * @return Ban Entry
 +     */
 +    @Nullable
-+    public default BanEntry banPlayerIP(@Nullable String reason, @Nullable Date expires, @Nullable String source, boolean kickPlayer) {
-+        BanEntry banEntry = Bukkit.getServer().getBanList(BanList.Type.IP).addBan(getAddress().getAddress().getHostAddress(), reason, expires, source);
++    public default org.bukkit.BanEntry banPlayerIP(@Nullable String reason, @Nullable java.util.Date expires, @Nullable String source, boolean kickPlayer) {
++        org.bukkit.BanEntry banEntry = org.bukkit.Bukkit.getServer().getBanList(org.bukkit.BanList.Type.IP).addBan(getAddress().getAddress().getHostAddress(), reason, expires, source);
 +        if (kickPlayer && isOnline()) {
 +            getPlayer().kickPlayer(reason);
 +        }

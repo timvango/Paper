@@ -5,7 +5,7 @@ Subject: [PATCH] Support hex colors in getLastColors
 
 
 diff --git a/src/main/java/org/bukkit/ChatColor.java b/src/main/java/org/bukkit/ChatColor.java
-index 44d597d7a6f66a18b8037e971170ff7cea5e825f..4594701d77c5d0f744bece871b98d9f6f73eb5a7 100644
+index 24ade174df77d75339b44bcd4b035e0c46d95dc3..f6eb30f53dad684f156102cf7147b2f00c82c71e 100644
 --- a/src/main/java/org/bukkit/ChatColor.java
 +++ b/src/main/java/org/bukkit/ChatColor.java
 @@ -363,6 +363,7 @@ public enum ChatColor {

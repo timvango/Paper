@@ -5,10 +5,10 @@ Subject: [PATCH] Expose server CommandMap
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index fb2001968b4f7498da9ea7bbb79468c1e5383c0f..93598a80a3f71d5e90fa9d7c93c01e1024c045c8 100644
+index fcdce3b516821d42327452790cc66663e4677613..d225e4a5587aa76a85a4b56e11d4563bdc97fe3f 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -1869,6 +1869,19 @@ public final class Bukkit {
+@@ -2077,6 +2077,19 @@ public final class Bukkit {
          return server.getUnsafe();
      }
  
@@ -29,10 +29,10 @@ index fb2001968b4f7498da9ea7bbb79468c1e5383c0f..93598a80a3f71d5e90fa9d7c93c01e10
      public static Server.Spigot spigot() {
          return server.spigot();
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index dfe7aa74fb4b49a2f3994571c041f1a5d9668841..b476f473078512363a7142d82fbc28afaa4690ff 100644
+index f52dd4c4602638bf02f676f6415d7051c0439cce..f6f3297231d3a9e9f142faf992437cc99e241109 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1436,6 +1436,15 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1602,6 +1602,15 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
      public double[] getTPS();
      // Paper end
  

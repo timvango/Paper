@@ -5,10 +5,10 @@ Subject: [PATCH] Prevent tile entity and entity crashes
 
 
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 03c667b08db332f33b6da4e386c22d1a69c4f9a7..8a2d18524e089cdc07125e424b37f1b629e591a6 100644
+index 5cc0546926ca1403aa325344fc138265f923fe1e..b35ca9316bf719e6b45f4d33ca7deecc95321ab3 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -738,11 +738,11 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -698,11 +698,11 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
          try {
              tickConsumer.accept(entity);
          } catch (Throwable throwable) {
@@ -26,10 +26,10 @@ index 03c667b08db332f33b6da4e386c22d1a69c4f9a7..8a2d18524e089cdc07125e424b37f1b6
      }
  
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
-index 65aedffad9bef4ab80eb835e9c05b6d411f6bb15..14ac3c7b47525b7fd0345d817c9020b5a59d2ebc 100644
+index be08224c8107aab3e9a3645a20977dd14bfff782..c518704386f14cd033307dd976455c35760d7236 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/BlockEntity.java
-@@ -233,7 +233,12 @@ public abstract class BlockEntity implements io.papermc.paper.util.KeyedObject {
+@@ -213,7 +213,12 @@ public abstract class BlockEntity {
              return minecraftkey + " // " + this.getClass().getCanonicalName();
          });
          if (this.level != null) {
@@ -44,10 +44,10 @@ index 65aedffad9bef4ab80eb835e9c05b6d411f6bb15..14ac3c7b47525b7fd0345d817c9020b5
          }
      }
 diff --git a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-index ba10a0128852d1052db1b0527352019e308d81b2..9638e28077b5720745f6125805fbda702a804f74 100644
+index 58a245b2ca6e65d491694142ad04d38236b46434..a438025a2102fa911a6941cd9723c84743113dc7 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/LevelChunk.java
-@@ -1031,11 +1031,11 @@ public class LevelChunk extends ChunkAccess {
+@@ -1049,11 +1049,11 @@ public class LevelChunk extends ChunkAccess {
  
                          gameprofilerfiller.pop();
                      } catch (Throwable throwable) {

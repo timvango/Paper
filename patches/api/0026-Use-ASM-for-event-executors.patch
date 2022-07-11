@@ -6,19 +6,19 @@ Subject: [PATCH] Use ASM for event executors.
 Uses method handles for private or static methods.
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 57c216660b86a35f3e182d90c2a107563eaf5cb1..5a1b66c6692451a78be6c4adb103de34bb06b056 100644
+index 7b8196db1fd1e283dc9ef71e3fe5137cc5920ba9..f0f8047cb3a43b447dc50b730dab3d0bc471b25a 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -38,6 +38,9 @@ dependencies {
-     apiAndDocs("net.kyori:adventure-text-serializer-gson")
+@@ -39,6 +39,9 @@ dependencies {
      apiAndDocs("net.kyori:adventure-text-serializer-legacy")
      apiAndDocs("net.kyori:adventure-text-serializer-plain")
+     apiAndDocs("net.kyori:adventure-text-logger-slf4j")
 +
 +    implementation("org.ow2.asm:asm:9.2")
 +    implementation("org.ow2.asm:asm-commons:9.2")
      // Paper end
  
-     compileOnly("org.apache.maven:maven-resolver-provider:3.8.1")
+     compileOnly("org.apache.maven:maven-resolver-provider:3.8.5")
 diff --git a/src/main/java/com/destroystokyo/paper/event/executor/MethodHandleEventExecutor.java b/src/main/java/com/destroystokyo/paper/event/executor/MethodHandleEventExecutor.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..5b28e9b1daba7834af67dbc193dd656bedd9a994
@@ -118,10 +118,10 @@ index 0000000000000000000000000000000000000000..c83672427324bd068ed52916f700b684
 +}
 diff --git a/src/main/java/com/destroystokyo/paper/event/executor/asm/ASMEventExecutorGenerator.java b/src/main/java/com/destroystokyo/paper/event/executor/asm/ASMEventExecutorGenerator.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b6e7d8ee8d903ebf975d60bec0e08603d9a49fdb
+index 0000000000000000000000000000000000000000..b8d5c13980858dc27fb5383726b7ebcaf14adcb8
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/event/executor/asm/ASMEventExecutorGenerator.java
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,51 @@
 +package com.destroystokyo.paper.event.executor.asm;
 +
 +import java.lang.reflect.Method;
@@ -147,14 +147,18 @@ index 0000000000000000000000000000000000000000..b6e7d8ee8d903ebf975d60bec0e08603
 +        methodGenerator.returnValue();
 +        methodGenerator.endMethod();
 +        // Generate the execute method
-+        methodGenerator = new GeneratorAdapter(writer.visitMethod(ACC_PUBLIC, "execute", "(Lorg/bukkit/event/Listener;Lorg/bukkit/event/Event;)V", null, null), ACC_PUBLIC, "execute", "(Lorg/bukkit/event/Listener;Lorg/bukkit/event/Listener;)V");;
++        methodGenerator = new GeneratorAdapter(writer.visitMethod(ACC_PUBLIC, "execute", "(Lorg/bukkit/event/Listener;Lorg/bukkit/event/Event;)V", null, null), ACC_PUBLIC, "execute", "(Lorg/bukkit/event/Listener;Lorg/bukkit/event/Listener;)V");
 +        methodGenerator.loadArg(0);
 +        methodGenerator.checkCast(Type.getType(m.getDeclaringClass()));
 +        methodGenerator.loadArg(1);
 +        methodGenerator.checkCast(Type.getType(m.getParameterTypes()[0]));
 +        methodGenerator.visitMethodInsn(m.getDeclaringClass().isInterface() ? INVOKEINTERFACE : INVOKEVIRTUAL, Type.getInternalName(m.getDeclaringClass()), m.getName(), Type.getMethodDescriptor(m), m.getDeclaringClass().isInterface());
-+        if (m.getReturnType() != void.class) {
-+            methodGenerator.pop();
++        // The only purpose of this switch statement is to generate the correct pop instruction, should the event handler method return something other than void.
++        // Non-void event handlers will be unsupported in a future release.
++        switch (Type.getType(m.getReturnType()).getSize()) {
++            // case 0 is omitted because the only type that has size 0 is void - no pop instruction needed.
++            case 1 -> methodGenerator.pop(); // handles reference types and most primitives
++            case 2 -> methodGenerator.pop2(); // handles long and double
 +        }
 +        methodGenerator.returnValue();
 +        methodGenerator.endMethod();
@@ -362,7 +366,7 @@ index a850f0780de05463fc0d3f9e15ff7f19d88b2aed..9026e108ccd3a88aee1267ee275137be
 +    // Paper end
  }
 diff --git a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
-index 451fce7223834169751679ce6dc22de3df24eae9..0cbac77e16fc36d805b79dd44837a38a79618c0b 100644
+index 5eb24f38f158d43fb42836b83c108f808c89512e..5d74fab03a15d7099e5dacb780eade4cdc185797 100644
 --- a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
 +++ b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
 @@ -291,21 +291,7 @@ public final class JavaPluginLoader implements PluginLoader {
