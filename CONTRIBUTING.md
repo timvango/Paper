@@ -4,11 +4,11 @@ PaperMC is happy you're willing to contribute to our projects. We are usually
 very lenient with all submitted PRs, but there are still some guidelines you
 can follow to make the approval process go more smoothly.
 
-## Use a Personal Fork and not Organization
+## Use a Personal Fork and not an Organization
 
 Paper will routinely modify your PR, whether it's a quick rebase or to take care
 of any minor nitpicks we might have. Often, it's better for us to solve these
-problems for you than make you go back and forth trying to fix it yourself.
+problems for you than make you go back and forth trying to fix them yourself.
 
 Unfortunately, if you use an organization for your PR, it prevents Paper from
 modifying it. This requires us to manually merge your PR, resulting in us
@@ -27,12 +27,12 @@ which can be obtained in (most) package managers such as `apt` (Debian / Ubuntu;
 you will most likely use this for WSL), `homebrew` (macOS / Linux), and more:
 
 - `git` (package `git` everywhere);
-- A Java 17 or later JDK (packages vary, use Google/DuckDuckGo/etc.).
+- A Java 21 or later JDK (packages vary, use Google/DuckDuckGo/etc.).
   - [Adoptium](https://adoptium.net/) has builds for most operating systems.
-  - Paper requires JDK 17 to build, however makes use of Gradle's
+  - Paper requires JDK 21 to build, however, makes use of Gradle's
     [Toolchains](https://docs.gradle.org/current/userguide/toolchains.html)
-    feature to allow building with only JRE 8 or later installed. (Gradle will
-    automatically provision JDK 17 for compilation if it cannot find an existing
+    feature to allow building with only JRE 11 or later installed. (Gradle will
+    automatically provision JDK 21 for compilation if it cannot find an existing
     install).
 
 If you're on Windows, check
@@ -42,11 +42,11 @@ If you're compiling with Docker, you can use Adoptium's
 [`eclipse-temurin`](https://hub.docker.com/_/eclipse-temurin/) images like so:
 
 ```console
-# docker run -it -v "$(pwd)":/data --rm eclipse-temurin:17.0.1_12-jdk bash
+# docker run -it -v "$(pwd)":/data --rm eclipse-temurin:21.0.3_9-jdk bash
 Pulling image...
 
 root@abcdefg1234:/# javac -version
-javac 17.0.1
+javac 21.0.3
 ```
 
 ## Understanding Patches
@@ -56,7 +56,6 @@ split into different directories which target certain parts of the code. These
 directories are:
 
 - `Paper-API` - Modifications to `Spigot-API`/`Bukkit`;
-- `Paper-MojangAPI` - An API for [Mojang's Brigadier](https://github.com/Mojang/brigadier);
 - `Paper-Server` - Modifications to `Spigot`/`CraftBukkit`.
 
 Because the entire structure is based on patches and git, a basic understanding
@@ -67,7 +66,7 @@ Assuming you have already forked the repository:
 
 1. Clone your fork to your local machine;
 2. Type `./gradlew applyPatches` in a terminal to apply the changes from upstream.
-On Windows, leave out the `./` at the beginning for all `gradlew` commands;
+On Windows, replace the `./` with `.\` at the beginning for all `gradlew` commands;
 3. cd into `Paper-Server` for server changes, and `Paper-API` for API changes.  
 <!--You can also run `./paper server` or `./paper api` for these same directories
 respectively.
@@ -97,7 +96,9 @@ Your commit will be converted into a patch that you can then PR into Paper.
 
 ## Modifying Patches
 
-Modifying previous patches is a bit more complex:
+Modifying previous patches is a bit more complex.
+Similar to adding patches, the methods to modify a patch are applied inside
+the `Paper-Server` and/or `Paper-API` folders.
 
 ### Method 1
 
@@ -184,7 +185,9 @@ These steps assume the `origin` remote is your fork of this repository and `upst
 1. Checkout feature/fix branch and rebase on master: `git checkout patch-branch && git rebase master`.
 1. Apply updated patches: `./gradlew applyPatches`.
 1. If there are conflicts, fix them.
-1. If your PR creates new patches instead of modifying exist ones, in both the `Paper-Server` and `Paper-API` directories, ensure your newly-created patch is the last commit by either:
+   * If there are conflicts within `Paper-API`, after fixing them run `./gradlew rebuildApiPatches` before re-running `./gradlew applyPatches`.
+   * The API patches are applied first, so if there are conflicts in the API patches, the server patches will not be applied.
+1. If your PR creates new patches instead of modifying existing ones, in both the `Paper-Server` and `Paper-API` directories, ensure your newly-created patch is the last commit by either:
     * Renaming the patch file with a large 4-digit number in front (e.g. 9999-Patch-to-add-some-new-stuff.patch), and re-applying patches.
     * Running `git rebase --interactive base` and moving the commits to the end.
 1. Rebuild patches: `./gradlew rebuildPatches`.
@@ -204,37 +207,100 @@ when making and submitting changes.
 
 ## Formatting
 
-All modifications to non-Paper files should be marked.
+All modifications to non-Paper files should be marked. The one exception to this is
+when modifying javadoc comments, which should not have these markers.
 
-- Multi-line changes start with `// Paper start` and end with `// Paper end`;
-- You can put a comment with an explanation if it isn't obvious, like this:
-`// Paper start - reason`.
-   - The comments should generally be about the reason the change was made, what
-  it was before, or what the change is.
-   - Multi-line messages should start with `// Paper start` and use `/* Multi
-  line message here */` for the message itself.
-- One-line changes should have `// Paper` or `// Paper - reason`.
+- You need to add a comment with a short and identifiable description of the patch:
+  `// Paper start - <COMMIT DESCRIPTION>`
+    - The comments should generally be about the reason the change was made, what
+      it was before, or what the change is.
+    - After the general commit description, you can add additional information either
+      after a `;` or in the next line.
+- Multi-line changes start with `// Paper start - <COMMIT DESCRIPTION>` and end
+  with `// Paper end - <COMMIT DESCRIPTION>`.
+- One-line changes should have `// Paper - <COMMIT DESCRIPTION>` at the end of the line.
 
 Here's an example of how to mark changes by Paper:
 
 ```java
-entity.getWorld().dontbeStupid(); // Paper - was beStupid() which is bad
+entity.getWorld().dontBeStupid(); // Paper - Was beStupid(), which is bad
 entity.getFriends().forEach(Entity::explode);
-entity.a();
-entity.b();
-// Paper start - use plugin-set spawn
+entity.updateFriends();
+
+// Paper start - Use plugin-set spawn
 // entity.getWorld().explode(entity.getWorld().getSpawn());
 Location spawnLocation = ((CraftWorld)entity.getWorld()).getSpawnLocation();
 entity.getWorld().explode(new BlockPosition(spawnLocation.getX(), spawnLocation.getY(), spawnLocation.getZ()));
-// Paper end
+// Paper end - Use plugin-set spawn
 ```
 
-We generally follow usual Java style (aka. Oracle style), or what is programmed
+We generally follow the usual Java style (aka. Oracle style), or what is programmed
 into most IDEs and formatters by default. There are a few notes, however:
 - It is fine to go over 80 lines as long as it doesn't hurt readability.  
 There are exceptions, especially in Spigot-related files
 - When in doubt or the code around your change is in a clearly different style,
 use the same style as the surrounding code.
+- Usage of the `var` keyword is heavily discouraged, as it makes reading patch files
+a lot harder  and can lead to confusion during updates due to changed return types.
+The only exception to this is if a line would otherwise be way too long/filled with
+hard to parse generics in a case where the base type itself is already obvious
+
+### Imports
+When adding new imports to a class in a file not created by the current patch, use the fully qualified class name
+instead of adding a new import to the top of the file. If you are using a type a significant number of times, you
+can add an import with a comment. However, if its only used a couple of times, the FQN is preferred to prevent future
+patch conflicts in the import section of the file.
+
+### Nullability annotations
+
+We are in the process of switching nullability annotation libraries, so you might need to use one or the other:
+
+**For classes we add**: Fields, method parameters and return types that are nullable should be marked via the
+`@Nullable` annotation from `org.jspecify.annotations`. Whenever you create a new class, add `@NullMarked`, meaning types
+are assumed to be non-null by default. For less obvious placing such as on generics or arrays, see the [JSpecify docs](https://jspecify.dev/docs/user-guide/).
+
+**For classes added by upstream**: Keep using both `@Nullable` and `@NotNull` from `org.jetbrains.annotations`. These
+will be replaced later.
+
+```java
+import org.bukkit.event.Event;
+// don't add import here, use FQN like below
+
+public class SomeEvent extends Event {
+    public final org.bukkit.Location newLocation; // Paper - add location
+}
+```
+
+## Access Transformers
+Sometimes, vanilla or CraftBukkit code already contains a field, method, or type you want to access
+but the visibility is too low (e.g. a private field in an entity class). Paper can use access transformers
+to change the visibility or remove the final modifier from fields, methods, and classes. Inside the `build-data/paper.at`
+file, you can add ATs that are applied when you `./gradlew applyPatches`. You can read about the format of ATs 
+[here](https://mcforge.readthedocs.io/en/latest/advanced/accesstransformers/#access-modifiers).
+
+### Important
+ATs should be included in the patch file which requires them within the commit message. Do not commit any changes to the
+`build-data/paper.at` file, just use it to initially change the visibility of members until you have finalized what you 
+need. Then, in the commit message for the patch which requires the ATs, add a header at the bottom of the commit message
+before any co-authors. It should look like the following after you `./gradlew rebuildPatches`.
+```
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jake Potrebic <jake.m.potrebic@gmail.com>
+Date: Wed, 8 Jun 2022 22:20:16 -0700
+Subject: [PATCH] Paper config files
+
+This patch adds Paper configuration files.
+Access transformers for this patch are below, but before the co-authors.
+
+== AT ==
+public org.spigotmc.SpigotWorldConfig getBoolean(Ljava/lang/String;Z)Z
+public net.minecraft.world.level.NaturalSpawner SPAWNING_CATEGORIES
+
+Co-authored-by: Jason Penilla <11360596+jpenilla@users.noreply.github.com>
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+...
+```
 
 ## Patch Notes
 
@@ -271,7 +337,7 @@ Subject: [PATCH] revert serverside behavior of keepalives
 This patch intends to bump up the time that a client has to reply to the
 server back to 30 seconds as per pre 1.12.2, which allowed clients
 more than enough time to reply potentially allowing them to be less
-tempermental due to lag spikes on the network thread, e.g. that caused
+temperamental due to lag spikes on the network thread, e.g. that caused
 by plugins that are interacting with netty.
 
 We also add a system property to allow people to tweak how long the server
@@ -426,16 +492,16 @@ file (`CONTRIBUTING.md`), the `LICENSE.md` file, and so forth.
 ### Patching and building is *really* slow, what can I do?
 
 This only applies if you're running Windows. If you're running a prior Windows
-release, either update to Windows 10 or move to macOS/Linux/BSD.
+release, either update to Windows 10/11 or move to macOS/Linux/BSD.
 
 In order to speed up patching process on Windows, it's recommended you get WSL
 2. This is available in Windows 10 v2004, build 19041 or higher. (You can check
 your version by running `winver` in the run window (Windows key + R)). If you're
-out of date, update your system with the
-[Windows Update Assistant](https://www.microsoft.com/en-us/software-download/windows10).
+using an out of date version of Windows 10, update your system with the
+[Windows 10 Update Assistant](https://www.microsoft.com/en-us/software-download/windows10) or [Windows 11 Update Assistant](https://www.microsoft.com/en-us/software-download/windows11).
 
 To set up WSL 2, follow the information here:
-<https://docs.microsoft.com/en-us/windows/wsl/install-win10>
+<https://docs.microsoft.com/en-us/windows/wsl/install>
 
 You will most likely want to use the Ubuntu apps. Once it's set up, install the
 required tools with `sudo apt-get update && sudo apt-get install $TOOL_NAMES
@@ -445,6 +511,6 @@ everything like usual.
 
 > ❗ Do not use the `/mnt/` directory in WSL! Instead, mount the WSL directories
 > in Windows like described here:
-> <https://www.howtogeek.com/426749/how-to-access-your-linux-wsl-files-in-windows-10/>
+> <https://docs.microsoft.com/en-us/windows/wsl/filesystems#view-your-current-directory-in-windows-file-explorer>
 
-[MappingViewer]: https://nms.screamingsandals.org/
+[MappingViewer]: https://mappings.cephx.dev/

@@ -6,10 +6,10 @@ Subject: [PATCH] Allow Reloading of Command Aliases
 Reload the aliases stored in commands.yml
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index c015c0b7678a141c84f0c0e339fe7c2a93988685..48eb69015cc70b0734f220f95fc0d8ffcd84954a 100644
+index 13fa39ed3d5ffa8a459d68d1e240e869ba42ac32..5660aa59d33ef2387839b9a67637672e6412088e 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2119,6 +2119,15 @@ public final class Bukkit {
+@@ -2403,6 +2403,15 @@ public final class Bukkit {
      public static void reloadPermissions() {
          server.reloadPermissions();
      }
@@ -26,10 +26,10 @@ index c015c0b7678a141c84f0c0e339fe7c2a93988685..48eb69015cc70b0734f220f95fc0d8ff
  
      @NotNull
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 7204f8ea6271dbb94406f07bc98ec322f928fcea..f7c54fbffe6b39d4f73b45cbc7c23f3508217f74 100644
+index 6567d1746f5cf16c9f3518203dd9916ff916ca68..2c0e3ce1e6bb9602e1af11711b573f0080aa6f4c 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1865,4 +1865,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2098,4 +2098,6 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
      // Spigot end
  
      void reloadPermissions(); // Paper
@@ -56,10 +56,10 @@ index bd2c7a6964722412148fae39e1b4951fc0002b9b..864c263bbd4dd6dd7c37a74b39b1a40a
 +    // Paper end
  }
 diff --git a/src/main/java/org/bukkit/command/SimpleCommandMap.java b/src/main/java/org/bukkit/command/SimpleCommandMap.java
-index 2e23c124311b38aaea64dd274c33afcd52edcf43..950a2d0b3b583c6b9a703190874bbc4df2783ab7 100644
+index c7fa1d235cea78bda4656ed66b8d42b119cc50fb..27243a1214bc4d7dbb46f0b9b254c8e3f8128419 100644
 --- a/src/main/java/org/bukkit/command/SimpleCommandMap.java
 +++ b/src/main/java/org/bukkit/command/SimpleCommandMap.java
-@@ -293,4 +293,11 @@ public class SimpleCommandMap implements CommandMap {
+@@ -294,4 +294,11 @@ public class SimpleCommandMap implements CommandMap {
              }
          }
      }
